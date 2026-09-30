@@ -2,6 +2,8 @@
 
 import streamlit as st
 
+from calculations.design_hour_volume import calculate_design_hour_volume
+from calculations.exceptions import CalculationInputError
 from models.input_data import (
     FacilityInfo,
     GeometricInputs,
@@ -103,15 +105,12 @@ def render_geometric_inputs() -> GeometricInputs:
 def render_traffic_inputs() -> TrafficInputs:
     """Collect traffic inputs in two columns with units in each label."""
     st.subheader("Datos de tránsito")
+    demand = render_design_hour_demand_inputs(
+        direction_label="D (%) para la dirección de mayor flujo *",
+        key_prefix="design_demand",
+    )
     left, right = st.columns(2)
     with left:
-        hourly_volume = st.number_input(
-            "Volumen horario bidireccional (veh/h) *",
-            min_value=0.0,
-            value=None,
-            step=1.0,
-            key="hourly_volume_two_way",
-        )
         phf = st.number_input(
             "Factor de hora pico, PHF *",
             min_value=0.0,
@@ -119,16 +118,6 @@ def render_traffic_inputs() -> TrafficInputs:
             value=None,
             step=0.01,
             key="peak_hour_factor",
-        )
-        major_split_choice = st.selectbox(
-            "Distribución direccional (mayor/opuesto) *",
-            ["Seleccione...", 50, 60, 70, 80, 90],
-            format_func=lambda value: (
-                "Seleccione la distribución"
-                if value == "Seleccione..."
-                else f"{value}/{100-int(value)}"
-            ),
-            key="major_direction_split",
         )
     with right:
         trucks_percent = st.number_input(
@@ -147,14 +136,67 @@ def render_traffic_inputs() -> TrafficInputs:
             step=0.1,
             key="recreational_vehicles_percent",
         )
-    return {
-        "hourly_volume_two_way_veh_per_h": hourly_volume,
-        "peak_hour_factor": phf,
-        "major_direction_percent": (
-            None if major_split_choice == "Seleccione..." else int(major_split_choice)
+    major_split = st.selectbox(
+        "Categoría direccional para tabla HCM (Exhibit 20-12) *",
+        ["Seleccione...", 50, 60, 70, 80, 90],
+        format_func=lambda value: (
+            "Seleccione la categoría HCM"
+            if value == "Seleccione..."
+            else f"{value}/{100-int(value)}"
         ),
+        key="hcm_major_direction_split",
+        help="Seleccione la fila tabulada aplicable. No se calcula ni redondea automáticamente desde D.",
+    )
+    return {
+        **demand,
+        "major_direction_percent": (
+            None if major_split == "Seleccione..." else float(major_split)
+        ),
+        "peak_hour_factor": phf,
         "trucks_percent": trucks_percent,
         "recreational_vehicles_percent": rvs_percent,
+    }
+
+
+def render_design_hour_demand_inputs(
+    *, direction_label: str, key_prefix: str
+) -> dict[str, float | None]:
+    """Collect TPDA, K3, and D and preview their total/directional VHD."""
+    st.markdown("**Conversión de TPDA a volumen de diseño**")
+    left, center, right = st.columns(3)
+    with left:
+        tpda = st.number_input(
+            "TPDA (veh/día) *", min_value=0.0, value=None, step=100.0,
+            key=f"{key_prefix}_tpda",
+        )
+    with center:
+        k3 = st.number_input(
+            "K3 (fracción) *", min_value=0.0, max_value=1.0, value=None,
+            step=0.01, key=f"{key_prefix}_k3",
+            help="Factor horario de diseño. El material de referencia lo denomina K; ingrese el valor respaldado por su estudio o norma. No se asigna un valor por defecto.",
+        )
+    with right:
+        direction_share = st.number_input(
+            direction_label, min_value=0.0, max_value=100.0, value=None,
+            step=1.0, key=f"{key_prefix}_direction_share",
+        )
+
+    if tpda is not None and k3 is not None and direction_share is not None:
+        try:
+            demand = calculate_design_hour_volume(tpda, k3, direction_share)
+        except CalculationInputError as exc:
+            st.warning(str(exc))
+        else:
+            st.info(
+                f"VHD = {demand.vhd_two_way_veh_per_h:,.1f} veh/h total; "
+                f"sentido analizado = {demand.vhd_analysis_direction_veh_per_h:,.1f} veh/h; "
+                f"sentido opuesto = {demand.vhd_opposing_direction_veh_per_h:,.1f} veh/h. "
+                "Conversión de demanda previa al procedimiento HCM."
+            )
+    return {
+        "tpda_veh_per_day": tpda,
+        "k3_design_hour_factor": k3,
+        "direction_share_percent": direction_share,
     }
 
 
@@ -236,6 +278,20 @@ def render_specific_grade_inputs() -> SpecificGradeInputs:
         horizontal=True,
     )
     direction = "upgrade" if direction_label == "Ascenso" else "downgrade"
+    demand = render_design_hour_demand_inputs(
+        direction_label="D (%) asignada al sentido analizado *",
+        key_prefix="design_demand",
+    )
+    demand_result = None
+    if all(demand[key] is not None for key in demand):
+        try:
+            demand_result = calculate_design_hour_volume(
+                float(demand["tpda_veh_per_day"]),
+                float(demand["k3_design_hour_factor"]),
+                float(demand["direction_share_percent"]),
+            )
+        except CalculationInputError:
+            pass
     left, right = st.columns(2)
     with left:
         grade_percent = st.number_input(
@@ -261,10 +317,6 @@ def render_specific_grade_inputs() -> SpecificGradeInputs:
     st.subheader("Datos de tránsito por sentido")
     left, right = st.columns(2)
     with left:
-        analysis_volume = st.number_input(
-            "Volumen del sentido analizado (veh/h) *", min_value=0.0,
-            value=None, step=1.0, key="specific_grade_analysis_volume",
-        )
         analysis_trucks = st.number_input(
             "Camiones y buses, sentido analizado (%) *", min_value=0.0,
             max_value=100.0, value=None, step=0.1,
@@ -275,10 +327,6 @@ def render_specific_grade_inputs() -> SpecificGradeInputs:
             value=None, step=0.1, key="specific_grade_analysis_rvs",
         )
     with right:
-        opposing_volume = st.number_input(
-            "Volumen del sentido opuesto (veh/h) *", min_value=0.0,
-            value=None, step=1.0, key="specific_grade_opposing_volume",
-        )
         opposing_trucks = st.number_input(
             "Camiones y buses, sentido opuesto (%) *", min_value=0.0,
             max_value=100.0, value=None, step=0.1,
@@ -347,8 +395,12 @@ def render_specific_grade_inputs() -> SpecificGradeInputs:
         analysis_grade_direction=direction,
         grade_percent=grade_percent,
         grade_length_km=grade_length,
-        analysis_volume_veh_per_h=analysis_volume,
-        opposing_volume_veh_per_h=opposing_volume,
+        analysis_volume_veh_per_h=(
+            demand_result.vhd_analysis_direction_veh_per_h if demand_result else None
+        ),
+        opposing_volume_veh_per_h=(
+            demand_result.vhd_opposing_direction_veh_per_h if demand_result else None
+        ),
         peak_hour_factor=phf,
         analysis_trucks_percent=analysis_trucks,
         analysis_rvs_percent=analysis_rvs,
@@ -364,4 +416,7 @@ def render_specific_grade_inputs() -> SpecificGradeInputs:
         downhill_trucks_at_crawl_percent=crawl_share,
         downhill_truck_crawl_speed_km_per_h=crawl_speed,
         base_free_flow_speed_opposing_km_per_h=bffs_opposing,
+        tpda_veh_per_day=demand["tpda_veh_per_day"],
+        k3_design_hour_factor=demand["k3_design_hour_factor"],
+        direction_share_percent=demand["direction_share_percent"],
     )

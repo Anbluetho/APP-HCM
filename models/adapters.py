@@ -1,8 +1,10 @@
 """Adapters between the Streamlit form contract and calculation models."""
 
-from models.input_data import AnalysisInput
+from models.input_data import AnalysisInput, TrafficInputs
 from models.two_lane_highway import TwoLaneHighwayInputs
 from models.multilane_highway import MultilaneHighwayInputs
+from calculations.design_hour_volume import calculate_design_hour_volume
+from calculations.design_hour_volume import DesignHourVolume
 
 
 def to_two_lane_highway_inputs(data: AnalysisInput) -> TwoLaneHighwayInputs:
@@ -15,10 +17,10 @@ def to_two_lane_highway_inputs(data: AnalysisInput) -> TwoLaneHighwayInputs:
     geometry = data["geometry"]
     operation = data["operation"]
     additional = data["procedure_additional"]
+    demand = _design_hour_demand(traffic)
     required = {
-        "hourly_volume_two_way_veh_per_h": traffic["hourly_volume_two_way_veh_per_h"],
-        "peak_hour_factor": traffic["peak_hour_factor"],
         "major_direction_percent": traffic["major_direction_percent"],
+        "peak_hour_factor": traffic["peak_hour_factor"],
         "trucks_percent": traffic["trucks_percent"],
         "recreational_vehicles_percent": traffic["recreational_vehicles_percent"],
         "terrain": operation["terrain"],
@@ -39,7 +41,7 @@ def to_two_lane_highway_inputs(data: AnalysisInput) -> TwoLaneHighwayInputs:
         raise ValueError("El motor de dos carriles solo tiene tablas documentadas para terreno plano/nivel u ondulado.")
 
     return TwoLaneHighwayInputs(
-        hourly_volume_veh_per_h=float(traffic["hourly_volume_two_way_veh_per_h"]),
+        hourly_volume_veh_per_h=demand.vhd_two_way_veh_per_h,
         peak_hour_factor=float(traffic["peak_hour_factor"]),
         major_direction_percent=float(traffic["major_direction_percent"]),
         trucks_percent=float(traffic["trucks_percent"]),
@@ -54,6 +56,9 @@ def to_two_lane_highway_inputs(data: AnalysisInput) -> TwoLaneHighwayInputs:
         base_free_flow_speed_km_per_h=float(
             additional["base_free_flow_speed_km_per_h"]
         ),
+        tpda_veh_per_day=demand.tpda_veh_per_day,
+        k3_design_hour_factor=demand.k3_design_hour_factor,
+        direction_share_percent=demand.direction_share_percent,
     )
 
 
@@ -63,10 +68,10 @@ def to_multilane_highway_inputs(data: AnalysisInput) -> MultilaneHighwayInputs:
     geometry = data["geometry"]
     operation = data["operation"]
     additional = data["procedure_additional"]
+    demand = _design_hour_demand(traffic)
     required = {
-        "hourly_volume_two_way_veh_per_h": traffic["hourly_volume_two_way_veh_per_h"],
-        "peak_hour_factor": traffic["peak_hour_factor"],
         "major_direction_percent": traffic["major_direction_percent"],
+        "peak_hour_factor": traffic["peak_hour_factor"],
         "trucks_percent": traffic["trucks_percent"],
         "recreational_vehicles_percent": traffic["recreational_vehicles_percent"],
         "terrain": operation["terrain"],
@@ -82,7 +87,7 @@ def to_multilane_highway_inputs(data: AnalysisInput) -> MultilaneHighwayInputs:
     if missing:
         raise ValueError("Faltan entradas requeridas para multicarril: " + ", ".join(missing))
     return MultilaneHighwayInputs(
-        hourly_volume_two_way_veh_per_h=float(traffic["hourly_volume_two_way_veh_per_h"]),
+        hourly_volume_two_way_veh_per_h=demand.vhd_two_way_veh_per_h,
         peak_hour_factor=float(traffic["peak_hour_factor"]),
         major_direction_percent=float(traffic["major_direction_percent"]),
         trucks_percent=float(traffic["trucks_percent"]),
@@ -95,4 +100,21 @@ def to_multilane_highway_inputs(data: AnalysisInput) -> MultilaneHighwayInputs:
         access_points_per_km=float(additional["access_points_per_km"]),
         base_free_flow_speed_km_per_h=float(additional["base_free_flow_speed_km_per_h"]),
         driver_population_factor=float(additional["driver_population_factor"]),
+    )
+
+
+def _design_hour_demand(traffic: TrafficInputs) -> DesignHourVolume:
+    """Return calculated VHD from the three required local demand inputs."""
+    required = {
+        "tpda_veh_per_day": traffic.get("tpda_veh_per_day"),
+        "k3_design_hour_factor": traffic.get("k3_design_hour_factor"),
+        "direction_share_percent": traffic.get("direction_share_percent"),
+    }
+    missing = [name for name, value in required.items() if value is None]
+    if missing:
+        raise ValueError("Faltan datos para calcular VHD: " + ", ".join(missing))
+    return calculate_design_hour_volume(
+        float(required["tpda_veh_per_day"]),
+        float(required["k3_design_hour_factor"]),
+        float(required["direction_share_percent"]),
     )

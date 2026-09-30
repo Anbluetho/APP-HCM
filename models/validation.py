@@ -3,6 +3,8 @@
 from typing import Any
 
 from models.input_data import AnalysisInput
+from calculations.design_hour_volume import calculate_design_hour_volume
+from calculations.exceptions import CalculationInputError
 
 
 def validate_analysis_input(data: AnalysisInput) -> list[str]:
@@ -37,17 +39,37 @@ def validate_analysis_input(data: AnalysisInput) -> list[str]:
             errors.append("Ingrese el ancho de berma requerido por Exhibit 20-5.")
 
     traffic = data["traffic"]
-    _require_positive(
-        errors,
-        traffic["hourly_volume_two_way_veh_per_h"],
-        "El volumen horario total",
-    )
+    _require_positive(errors, traffic["tpda_veh_per_day"], "El TPDA")
+    k3 = traffic["k3_design_hour_factor"]
+    if k3 is None or not 0 < k3 <= 1:
+        errors.append("K3 debe ser una fracción mayor que 0 y menor o igual que 1.")
+    direction_share = traffic["direction_share_percent"]
+    if direction_share is None or not 0 <= direction_share <= 100:
+        errors.append("La distribución direccional D debe estar entre 0 y 100 %.")
+    elif not multilane and direction_share < 50:
+        errors.append("En el procedimiento bidireccional extendido, D debe corresponder al sentido de mayor flujo (D ≥ 50 %).")
+    if (
+        traffic["tpda_veh_per_day"] is not None
+        and k3 is not None
+        and 0 < k3 <= 1
+        and direction_share is not None
+        and 0 <= direction_share <= 100
+    ):
+        try:
+            calculate_design_hour_volume(
+                float(traffic["tpda_veh_per_day"]),
+                float(k3),
+                float(direction_share),
+            )
+        except (CalculationInputError, TypeError, ValueError) as exc:
+            if str(exc) not in errors:
+                errors.append(str(exc))
     phf = traffic["peak_hour_factor"]
     if phf is None or not 0 < phf <= 1:
         errors.append("Ingrese PHF mayor que cero y menor o igual que 1.")
-    major_split = traffic["major_direction_percent"]
-    if major_split not in {50, 60, 70, 80, 90}:
-        errors.append("Seleccione una distribución direccional tabulada en Exhibit 20-12 (50/50 a 90/10).")
+    hcm_major_split = traffic["major_direction_percent"]
+    if hcm_major_split not in {50, 60, 70, 80, 90}:
+        errors.append("Seleccione una categoría direccional tabulada en Exhibit 20-12 (50/50 a 90/10). No se redondea desde D.")
     trucks = traffic["trucks_percent"]
     rvs = traffic["recreational_vehicles_percent"]
     _require_percentage(errors, trucks, "El porcentaje de camiones y buses")

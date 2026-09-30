@@ -15,7 +15,9 @@ class TwoLaneStreamlitTests(unittest.TestCase):
             "segment_length_km": 10.0,
             "lane_width_m": 3.4,
             "shoulder_width_m": 1.2,
-            "hourly_volume_two_way": 1600.0,
+            "design_demand_tpda": 16000.0,
+            "design_demand_k3": 0.10,
+            "design_demand_direction_share": 50.0,
             "peak_hour_factor": 0.95,
             "trucks_percent": 14.0,
             "recreational_vehicles_percent": 4.0,
@@ -24,7 +26,7 @@ class TwoLaneStreamlitTests(unittest.TestCase):
             "no_passing_zones_percent": 50.0,
         }.items():
             app.number_input(key=key).set_value(value)
-        app.selectbox(key="major_direction_split").set_value(50)
+        app.selectbox(key="hcm_major_direction_split").set_value(50)
         app.selectbox(key="terrain").set_value("ondulado")
         app.selectbox(key="highway_class").set_value("I")
         app.button(key="calculate_analysis").click().run()
@@ -48,8 +50,9 @@ class TwoLaneStreamlitTests(unittest.TestCase):
         values = {
             "specific_grade_percent": 3.2,
             "specific_grade_length_km": 1.2,
-            "specific_grade_analysis_volume": 600.0,
-            "specific_grade_opposing_volume": 300.0,
+            "design_demand_tpda": 1000.0,
+            "design_demand_k3": 0.9,
+            "design_demand_direction_share": 66.6666666667,
             "specific_grade_phf": 0.95,
             "specific_grade_analysis_trucks": 10.0,
             "specific_grade_analysis_rvs": 2.0,
@@ -80,8 +83,9 @@ class TwoLaneStreamlitTests(unittest.TestCase):
         values = {
             "specific_grade_percent": 3.2,
             "specific_grade_length_km": 1.2,
-            "specific_grade_analysis_volume": 600.0,
-            "specific_grade_opposing_volume": 300.0,
+            "design_demand_tpda": 1000.0,
+            "design_demand_k3": 0.9,
+            "design_demand_direction_share": 66.6666666667,
             "specific_grade_phf": 0.95,
             "specific_grade_analysis_trucks": 10.0,
             "specific_grade_analysis_rvs": 2.0,

@@ -25,4 +25,6 @@ class TwoLaneHighwayInputs:
     access_points_per_km: float
     no_passing_zones_percent: float
     base_free_flow_speed_km_per_h: float
-
+    tpda_veh_per_day: float | None = None
+    k3_design_hour_factor: float | None = None
+    direction_share_percent: float | None = None

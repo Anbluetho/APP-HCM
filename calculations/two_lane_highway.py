@@ -12,6 +12,7 @@ import re
 from typing import Any, Callable
 
 from calculations.capacity import assess_capacity
+from calculations.design_hour_volume import calculate_design_hour_volume
 from calculations.exceptions import CalculationDataError, CalculationInputError
 from calculations.flow import calculate_equivalent_flow_rate
 from calculations.heavy_vehicles import calculate_heavy_vehicle_factor
@@ -110,6 +111,19 @@ class TwoLaneHighwayAnalyzer:
                 "ptsf_highest_direction_flow_pc_per_h": capacity_check.highest_directional_flow_ptsf_pc_per_h,
                 "volume_capacity_ratio": capacity_check.volume_capacity_ratio,
             }
+            if inputs.tpda_veh_per_day is not None:
+                demand = calculate_design_hour_volume(
+                    inputs.tpda_veh_per_day,
+                    float(inputs.k3_design_hour_factor),
+                    float(inputs.direction_share_percent),
+                )
+                intermediate["design_hour_volume_conversion"] = {
+                    "equation": "VHD = TPDA × K3",
+                    "vhd_two_way_veh_per_h": demand.vhd_two_way_veh_per_h,
+                    "vhd_analysis_direction_veh_per_h": demand.vhd_analysis_direction_veh_per_h,
+                    "vhd_opposing_direction_veh_per_h": demand.vhd_opposing_direction_veh_per_h,
+                    "source_category": "Parámetros de demanda ingresados; etapa previa al HCM",
+                }
             if capacity_check.oversaturated:
                 warnings.append(
                     "La demanda excede la capacidad HCM (3,200 pc/h bidireccionales o "
@@ -194,6 +208,23 @@ class TwoLaneHighwayAnalyzer:
                 raise CalculationInputError(f"El campo obligatorio {key} no fue suministrado.")
             if not isinstance(value, (int, float)) or not isfinite(value):
                 raise CalculationInputError(f"{key} debe ser un número finito.")
+        demand_values = (
+            data.tpda_veh_per_day,
+            data.k3_design_hour_factor,
+            data.direction_share_percent,
+        )
+        if all(value is None for value in demand_values):
+            pass  # Allows independent legacy calls already supplying an hourly volume.
+        elif any(value is None for value in demand_values):
+            raise CalculationInputError("Para documentar la conversión a VHD, ingrese TPDA, K3 y D.")
+        else:
+            demand = calculate_design_hour_volume(
+                float(data.tpda_veh_per_day),
+                float(data.k3_design_hour_factor),
+                float(data.direction_share_percent),
+            )
+            if abs(demand.vhd_two_way_veh_per_h - data.hourly_volume_veh_per_h) > 1e-6:
+                raise CalculationInputError("El volumen horario no coincide con TPDA × K3.")
         for key in ("terrain", "highway_class"):
             if not isinstance(numeric[key], str) or not numeric[key].strip():
                 raise CalculationInputError(f"El campo obligatorio {key} no fue suministrado.")

@@ -26,7 +26,11 @@ validados del *Highway Capacity Manual 2000*.
 - **Pendiente específica de dos carriles:** se incorporó una ruta direccional
   separada para ascensos/descensos de al menos 3 %, respaldada por Exhibits
   20-13 a 20-21 del capítulo 20. El motor bidireccional existente se conserva.
-  La ruta requiere datos medidos por sentido; no realiza conversión TPDA/K30.
+- **Conversión de demanda:** la interfaz solicita TPDA, K3 y D para obtener
+  VHD total y por sentido antes de llamar al motor HCM. Es una etapa de demanda
+  separada del PHF y de los factores HCM; K3 no se obtiene de una tabla HCM ni
+  recibe un valor predeterminado. La nomenclatura/fuente normativa definitiva
+  de K3 debe ser confirmada por el analista para el proyecto.
 
 El formulario diferencia los procedimientos de dos carriles y multicarril.
 Otros tipos de instalaciones continúan fuera del alcance.
@@ -37,6 +41,7 @@ Otros tipos de instalaciones continúan fuera del alcance.
 .
 ├── app.py                         # Orquesta la interfaz Streamlit
 ├── calculations/                  # Funciones puras del procedimiento HCM
+│   ├── design_hour_volume.py      # Conversión TPDA/K3/D previa al HCM
 ├── data/
 │   ├── data_loader.py             # Carga, búsqueda, lookup y validación de tablas
 │   ├── procedure_verification.py  # Verifica las tablas requeridas antes del cálculo
@@ -144,10 +149,10 @@ reproducen ejemplos publicados del capítulo 20. Ejecuta desde la raíz:
 ### Pendiente específica direccional
 
 Al seleccionar **Pendiente específica**, la aplicación utiliza el motor
-`calculations/specific_grade/` y el modelo `models/specific_grade.py`. Las
-entradas son volumen horario observado por sentido, PHF, composición vehicular
-por sentido, pendiente y longitud de pendiente (independiente de la longitud
-total del tramo), clase HCM, geometría y zonas de no rebase. Se acepta 3 % o
+`calculations/specific_grade/` y el modelo `models/specific_grade.py`. La
+demanda por sentido se obtiene de TPDA, K3 y D; además se ingresan PHF,
+composición vehicular por sentido, pendiente y longitud de pendiente
+(independiente de la longitud total del tramo), clase HCM, geometría y zonas de no rebase. Se acepta 3 % o
 mayor; para ascensos el análisis específico es aplicable desde 0,4 km y es
 requerido desde 1,0 km; los descensos específicos requieren al menos 1,0 km.
 
@@ -161,7 +166,8 @@ el cálculo con el campo requerido.
 
 La capacidad direccional (1.700 pc/h por sentido) se recupera del registro
 documentado de capacidad de dos carriles. El cálculo direccional no usa la
-capacidad bidireccional de 3.200 pc/h ni K30. Los archivos CSV de los Exhibits
+capacidad bidireccional de 3.200 pc/h. K3 se aplica solo antes del motor HCM
+para estimar la demanda horaria; no se mezcla con PHF ni con tablas HCM. Los archivos CSV de los Exhibits
 20-13 a 20-21 se encuentran en `data/hcm_tables/reviewed/`; su procedencia,
 unidades, página fuente y revisión se registran en `registry.json`. El Exhibit
 20-18 no es un factor genérico: solo se consulta cuando se declara la condición

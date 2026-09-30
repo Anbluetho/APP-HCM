@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from math import isfinite
 from typing import Any
 
 from calculations.exceptions import CalculationDataError, CalculationInputError
+from calculations.design_hour_volume import calculate_design_hour_volume
 from calculations.specific_grade.flow import (
     DirectionalFlowResult,
     calculate_directional_flow,
@@ -109,6 +110,7 @@ class SpecificGradeAnalyzer:
 
     def analyze(self, inputs: SpecificGradeInputs) -> CalculationResult:
         """Run a source-backed, independent specific-grade analysis."""
+        inputs = self._with_design_hour_volumes(inputs)
         self.validate_inputs(inputs)
         try:
             tables = {
@@ -202,6 +204,14 @@ class SpecificGradeAnalyzer:
                 "capacity_opposing_vo_ptsf_pc_per_h": flow_results["ptsf_opposing"].flow_pc_per_h,
                 "volume_capacity_ratio": v_c,
             }
+            if inputs.tpda_veh_per_day is not None:
+                intermediate["design_hour_volume_conversion"] = {
+                    "equation": "VHD = TPDA × K3; sentido analizado = VHD × D; opuesto = VHD − analizado",
+                    "vhd_two_way_veh_per_h": inputs.tpda_veh_per_day * inputs.k3_design_hour_factor,
+                    "vhd_analysis_direction_veh_per_h": inputs.analysis_volume_veh_per_h,
+                    "vhd_opposing_direction_veh_per_h": inputs.opposing_volume_veh_per_h,
+                    "source_category": "Parámetros de demanda ingresados; etapa previa al HCM",
+                }
             if at_capacity:
                 return CalculationResult(
                     inputs=asdict(inputs), parameters=parameters,
@@ -288,6 +298,7 @@ class SpecificGradeAnalyzer:
     @staticmethod
     def validate_inputs(inputs: SpecificGradeInputs) -> None:
         """Validate inputs and HCM-specific grade applicability conditions."""
+        inputs = SpecificGradeAnalyzer._with_design_hour_volumes(inputs)
         if inputs.analysis_grade_direction not in {"upgrade", "downgrade"}:
             raise CalculationInputError("Seleccione ascenso o descenso para la dirección analizada.")
         numeric = {
@@ -371,6 +382,29 @@ class SpecificGradeAnalyzer:
                 raise CalculationInputError("La proporción de camiones a velocidad de arrastre debe estar en (0, 100] %.")
             if inputs.downhill_truck_crawl_speed_km_per_h <= 0:
                 raise CalculationInputError("La velocidad de arrastre debe ser mayor que cero.")
+
+    @staticmethod
+    def _with_design_hour_volumes(inputs: SpecificGradeInputs) -> SpecificGradeInputs:
+        """Derive directional hourly volumes when TPDA/K3/D were supplied."""
+        demand_values = (
+            inputs.tpda_veh_per_day,
+            inputs.k3_design_hour_factor,
+            inputs.direction_share_percent,
+        )
+        if all(value is None for value in demand_values):
+            return inputs  # Compatibility for direct engine callers with observed Vd/Vo.
+        if any(value is None for value in demand_values):
+            raise CalculationInputError("Para derivar los volúmenes por sentido, ingrese TPDA, K3 y D.")
+        demand = calculate_design_hour_volume(
+            float(inputs.tpda_veh_per_day),
+            float(inputs.k3_design_hour_factor),
+            float(inputs.direction_share_percent),
+        )
+        return replace(
+            inputs,
+            analysis_volume_veh_per_h=demand.vhd_analysis_direction_veh_per_h,
+            opposing_volume_veh_per_h=demand.vhd_opposing_direction_veh_per_h,
+        )
 
     @staticmethod
     def _parameter_results(

@@ -28,6 +28,14 @@ _UNITS = {
     "analysis_flow_ptsf_pc_per_h": "pc/h",
     "opposing_flow_ptsf_pc_per_h": "pc/h",
     "capacity_pc_per_h_direction": "pc/h",
+    "vhd_two_way_veh_per_h": "veh/h",
+    "vhd_analysis_direction_veh_per_h": "veh/h",
+    "vhd_opposing_direction_veh_per_h": "veh/h",
+    "tpda_veh_per_day": "veh/día",
+    "k3_design_hour_factor": "fracción",
+    "direction_share_percent": "%",
+    "analysis_volume_veh_per_h": "veh/h",
+    "opposing_volume_veh_per_h": "veh/h",
 }
 
 
@@ -161,7 +169,7 @@ def render_specific_grade_results(
 
     with st.expander("Ver detalle del cálculo"):
         st.markdown("**Datos de entrada**")
-        st.dataframe(_value_rows(result.inputs, "Dato ingresado"), hide_index=True, width="stretch")
+        st.dataframe(_specific_input_rows(result.inputs), hide_index=True, width="stretch")
 
         st.markdown("**Factores HCM por medida y sentido**")
         st.dataframe(_value_rows(result.parameters, "Tabla/factor HCM"), hide_index=True, width="stretch")
@@ -196,9 +204,12 @@ def _input_rows(
 ) -> list[dict[str, str]]:
     """Prepare a concise audit table of project information and engine inputs."""
     labels = {
-        "hourly_volume_veh_per_h": ("Volumen horario", "veh/h"),
+        "tpda_veh_per_day": ("TPDA ingresado", "veh/día"),
+        "k3_design_hour_factor": ("Factor horario de diseño K3", "fracción"),
+        "direction_share_percent": ("D del sentido analizado/mayor", "%"),
+        "hourly_volume_veh_per_h": ("VHD bidireccional calculado", "veh/h"),
         "peak_hour_factor": ("Factor de hora pico (PHF)", "adimensional"),
-        "major_direction_percent": ("Distribución direccional mayor/opuesto", "% / %"),
+        "major_direction_percent": ("Categoría direccional seleccionada para HCM", "% / %"),
         "trucks_percent": ("Camiones y buses", "%"),
         "recreational_vehicles_percent": ("Vehículos recreacionales", "%"),
         "terrain": ("Tipo de terreno", ""),
@@ -218,9 +229,30 @@ def _input_rows(
             rows.append({"Dato": label, "Valor": str(value), "Unidad": "", "Origen": "Usuario"})
     for key, value in result.inputs.items():
         label, unit = labels.get(key, (key.replace("_", " "), ""))
+        origin = "Calculado desde TPDA/K3" if key == "hourly_volume_veh_per_h" else "Usuario"
         rows.append(
-            {"Dato": label, "Valor": _format(value), "Unidad": unit, "Origen": "Usuario"}
+            {"Dato": label, "Valor": _format(value), "Unidad": unit, "Origen": origin}
         )
+    return rows
+
+
+def _specific_input_rows(inputs: dict[str, Any]) -> list[dict[str, str]]:
+    """Show user demand factors separately from derived directional volumes."""
+    rows = []
+    for key, value in inputs.items():
+        if key == "analysis_volume_veh_per_h":
+            label, unit, origin = "VHD sentido analizado", "veh/h", "Calculado desde TPDA/K3/D"
+        elif key == "opposing_volume_veh_per_h":
+            label, unit, origin = "VHD sentido opuesto", "veh/h", "Calculado desde TPDA/K3/D"
+        elif key == "tpda_veh_per_day":
+            label, unit, origin = "TPDA", "veh/día", "Usuario"
+        elif key == "k3_design_hour_factor":
+            label, unit, origin = "K3", "fracción", "Usuario"
+        elif key == "direction_share_percent":
+            label, unit, origin = "D del sentido analizado", "%", "Usuario"
+        else:
+            label, unit, origin = key.replace("_", " "), _UNITS.get(key, ""), "Usuario"
+        rows.append({"Dato": label, "Valor": _format(value), "Unidad": unit, "Origen": origin})
     return rows
 
 

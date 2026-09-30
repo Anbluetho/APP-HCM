@@ -16,7 +16,7 @@ No incluye segmentos direccionales, rampas, pendientes específicas, carriles de
 | `capacity.py` | vp de velocidad y PTSF, reparto, capacidades | v/c y condición de sobresaturación | Capacidad y criterios LOS F del capítulo 20 |
 | `performance.py` | FFS, vp, fnp, PTSF y entradas de viaje | ATS, BPTSF, PTSF, vehículos-km y tiempo de viaje | Eq. 20-5, 20-6, 20-7 y worksheet/ejemplo del capítulo 20 |
 | `los.py` | Clase, ATS, PTSF, filas de criterios | LOS A–F | Exhibits 20-2 y 20-4, obtenidos mediante el catálogo |
-| `design_hour_volume.py` | TPDA, K3 y D | VHD total y por sentido | Conversión local de demanda antes del HCM; VHD = TPDA×K3, reparto direccional por D |
+| `design_hour_volume.py` | TPDA, K3 y categoría direccional Exhibit 20-12 | VHD total y por sentido | Conversión local de demanda antes del HCM; VHD = TPDA×K3 y el reparto usa la única categoría seleccionada |
 | `two_lane_highway.py` | `TwoLaneHighwayInputs` con VHD | `CalculationResult` trazable | Orquesta las funciones y carga parámetros verificados con `DataLoader` |
 | `exceptions.py` | — | Errores de entrada, datos y cálculo | Mensajes explícitos; no sustituye valores faltantes |
 
@@ -24,7 +24,7 @@ Las estructuras de entrada y salida se definen en `models/two_lane_highway.py` y
 
 ## Entradas y límites de datos
 
-La interfaz convierte TPDA, K3 y D a VHD mediante `calculate_design_hour_volume`; K3 es un dato de entrada del analista, no una tabla o factor HCM. `TwoLaneHighwayInputs` recibe ese VHD, PHF, la categoría direccional seleccionada para Exhibit 20-12, porcentajes separados de camiones y RV, terreno `level` o `rolling`, clase HCM I/II, longitud, anchos, densidad de accesos, zonas de no rebase y BFFS. BFFS es criterio/dato del analista; HCM 2000 no da un valor por defecto general. La selección HCM usa únicamente las categorías tabuladas (50/50 a 90/10); se mantiene separada de D y no se redondea automáticamente.
+La interfaz convierte TPDA y K3 a VHD mediante `calculate_design_hour_volume`; el reparto por sentido proviene exclusivamente de la categoría direccional de Exhibit 20-12. K3 es un dato de entrada del analista, no una tabla o factor HCM. `TwoLaneHighwayInputs` recibe ese VHD, PHF, la categoría de Exhibit 20-12, porcentajes separados de camiones y RV, terreno `level` o `rolling`, clase HCM I/II, longitud, anchos, densidad de accesos, zonas de no rebase y BFFS. Para pendiente específica, una selección mayor/menor identifica cuál parte de esa misma categoría corresponde a la dirección analizada. BFFS es criterio/dato del analista; HCM 2000 no da un valor por defecto general. Solo se aceptan categorías tabuladas 50/50 a 90/10, sin interpolar ni redondear el reparto.
 
 Las tablas se leen por `DataLoader` desde `data/hcm_tables/`. El registro bloquea valores que no estén verificados. Se usa interpolación lineal en las Exhibits 20-11/20-12 entre celdas, contrastada con los Ejemplos 1 y 2. Para fA solo se admiten las categorías tabuladas (0, 6, 12, 18 y ≥24 accesos/km), sin extrapolar. El reparto principal se limita a los valores publicados en Exhibit 20-12 (50/50 a 90/10, en pasos de diez puntos). Entradas fuera del dominio producen un error; no se redondean o suponen silenciosamente.
 

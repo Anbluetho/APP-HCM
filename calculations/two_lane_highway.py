@@ -115,14 +115,16 @@ class TwoLaneHighwayAnalyzer:
                 demand = calculate_design_hour_volume(
                     inputs.tpda_veh_per_day,
                     float(inputs.k3_design_hour_factor),
-                    float(inputs.direction_share_percent),
+                    inputs.major_direction_percent,
                 )
                 intermediate["design_hour_volume_conversion"] = {
-                    "equation": "VHD = TPDA × K3",
+                    "equation": "VHD = TPDA × K3; reparto direccional según Exhibit 20-12",
                     "vhd_two_way_veh_per_h": demand.vhd_two_way_veh_per_h,
+                    "major_direction_percent": demand.major_direction_percent,
+                    "analysis_direction_share_percent": demand.analysis_direction_share_percent,
                     "vhd_analysis_direction_veh_per_h": demand.vhd_analysis_direction_veh_per_h,
                     "vhd_opposing_direction_veh_per_h": demand.vhd_opposing_direction_veh_per_h,
-                    "source_category": "Parámetros de demanda ingresados; etapa previa al HCM",
+                    "source_category": "Reparto direccional de HCM 2000, Exhibit 20-12",
                 }
             if capacity_check.oversaturated:
                 warnings.append(
@@ -211,17 +213,16 @@ class TwoLaneHighwayAnalyzer:
         demand_values = (
             data.tpda_veh_per_day,
             data.k3_design_hour_factor,
-            data.direction_share_percent,
         )
         if all(value is None for value in demand_values):
             pass  # Allows independent legacy calls already supplying an hourly volume.
         elif any(value is None for value in demand_values):
-            raise CalculationInputError("Para documentar la conversión a VHD, ingrese TPDA, K3 y D.")
+            raise CalculationInputError("Para documentar la conversión a VHD, ingrese TPDA y K3.")
         else:
             demand = calculate_design_hour_volume(
                 float(data.tpda_veh_per_day),
                 float(data.k3_design_hour_factor),
-                float(data.direction_share_percent),
+                float(data.major_direction_percent),
             )
             if abs(demand.vhd_two_way_veh_per_h - data.hourly_volume_veh_per_h) > 1e-6:
                 raise CalculationInputError("El volumen horario no coincide con TPDA × K3.")

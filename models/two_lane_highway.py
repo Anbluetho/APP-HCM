@@ -27,4 +27,3 @@ class TwoLaneHighwayInputs:
     base_free_flow_speed_km_per_h: float
     tpda_veh_per_day: float | None = None
     k3_design_hour_factor: float | None = None
-    direction_share_percent: float | None = None

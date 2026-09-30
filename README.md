@@ -26,11 +26,12 @@ validados del *Highway Capacity Manual 2000*.
 - **Pendiente específica de dos carriles:** se incorporó una ruta direccional
   separada para ascensos/descensos de al menos 3 %, respaldada por Exhibits
   20-13 a 20-21 del capítulo 20. El motor bidireccional existente se conserva.
-- **Conversión de demanda:** la interfaz solicita TPDA, K3 y D para obtener
-  VHD total y por sentido antes de llamar al motor HCM. Es una etapa de demanda
-  separada del PHF y de los factores HCM; K3 no se obtiene de una tabla HCM ni
-  recibe un valor predeterminado. La nomenclatura/fuente normativa definitiva
-  de K3 debe ser confirmada por el analista para el proyecto.
+- **Conversión de demanda:** la interfaz solicita TPDA, K3 y una categoría
+  direccional del Exhibit 20-12. Esa categoría es la única fuente del reparto
+  usado para calcular volúmenes por sentido y para los cálculos HCM que la
+  requieren; ya no se solicita D aparte. En pendiente específica se indica si
+  el sentido analizado corresponde al mayor o menor flujo. K3 es un dato previo
+  al HCM, no se obtiene de una tabla HCM ni recibe un valor predeterminado.
 
 El formulario diferencia los procedimientos de dos carriles y multicarril.
 Otros tipos de instalaciones continúan fuera del alcance.
@@ -41,7 +42,7 @@ Otros tipos de instalaciones continúan fuera del alcance.
 .
 ├── app.py                         # Orquesta la interfaz Streamlit
 ├── calculations/                  # Funciones puras del procedimiento HCM
-│   ├── design_hour_volume.py      # Conversión TPDA/K3/D previa al HCM
+│   ├── design_hour_volume.py      # Conversión TPDA/K3 + Exhibit 20-12 previa al HCM
 ├── data/
 │   ├── data_loader.py             # Carga, búsqueda, lookup y validación de tablas
 │   ├── procedure_verification.py  # Verifica las tablas requeridas antes del cálculo
@@ -150,8 +151,10 @@ reproducen ejemplos publicados del capítulo 20. Ejecuta desde la raíz:
 
 Al seleccionar **Pendiente específica**, la aplicación utiliza el motor
 `calculations/specific_grade/` y el modelo `models/specific_grade.py`. La
-demanda por sentido se obtiene de TPDA, K3 y D; además se ingresan PHF,
-composición vehicular por sentido, pendiente y longitud de pendiente
+demanda por sentido se obtiene de TPDA, K3 y la categoría direccional del
+Exhibit 20-12. Se indica si la pendiente corresponde al mayor o menor flujo;
+no se solicita D aparte. Además se ingresan PHF, composición vehicular por
+sentido, pendiente y longitud de pendiente
 (independiente de la longitud total del tramo), clase HCM, geometría y zonas de no rebase. Se acepta 3 % o
 mayor; para ascensos el análisis específico es aplicable desde 0,4 km y es
 requerido desde 1,0 km; los descensos específicos requieren al menos 1,0 km.

@@ -26,7 +26,6 @@ class GeometricInputs(TypedDict):
 class TrafficInputs(TypedDict):
     tpda_veh_per_day: float | None
     k3_design_hour_factor: float | None
-    direction_share_percent: float | None
     major_direction_percent: float | None
     peak_hour_factor: float | None
     trucks_percent: float | None

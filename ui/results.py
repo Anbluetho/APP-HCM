@@ -33,7 +33,6 @@ _UNITS = {
     "vhd_opposing_direction_veh_per_h": "veh/h",
     "tpda_veh_per_day": "veh/día",
     "k3_design_hour_factor": "fracción",
-    "direction_share_percent": "%",
     "analysis_volume_veh_per_h": "veh/h",
     "opposing_volume_veh_per_h": "veh/h",
 }
@@ -206,7 +205,6 @@ def _input_rows(
     labels = {
         "tpda_veh_per_day": ("TPDA ingresado", "veh/día"),
         "k3_design_hour_factor": ("Factor horario de diseño K3", "fracción"),
-        "direction_share_percent": ("D del sentido analizado/mayor", "%"),
         "hourly_volume_veh_per_h": ("VHD bidireccional calculado", "veh/h"),
         "peak_hour_factor": ("Factor de hora pico (PHF)", "adimensional"),
         "major_direction_percent": ("Categoría direccional seleccionada para HCM", "% / %"),
@@ -230,6 +228,8 @@ def _input_rows(
     for key, value in result.inputs.items():
         label, unit = labels.get(key, (key.replace("_", " "), ""))
         origin = "Calculado desde TPDA/K3" if key == "hourly_volume_veh_per_h" else "Usuario"
+        if key == "major_direction_percent" and value is not None:
+            value = f"{int(value)}/{100 - int(value)}"
         rows.append(
             {"Dato": label, "Valor": _format(value), "Unidad": unit, "Origen": origin}
         )
@@ -241,15 +241,19 @@ def _specific_input_rows(inputs: dict[str, Any]) -> list[dict[str, str]]:
     rows = []
     for key, value in inputs.items():
         if key == "analysis_volume_veh_per_h":
-            label, unit, origin = "VHD sentido analizado", "veh/h", "Calculado desde TPDA/K3/D"
+            label, unit, origin = "VHD sentido analizado", "veh/h", "Calculado desde TPDA/K3 y Exhibit 20-12"
         elif key == "opposing_volume_veh_per_h":
-            label, unit, origin = "VHD sentido opuesto", "veh/h", "Calculado desde TPDA/K3/D"
+            label, unit, origin = "VHD sentido opuesto", "veh/h", "Calculado desde TPDA/K3 y Exhibit 20-12"
         elif key == "tpda_veh_per_day":
             label, unit, origin = "TPDA", "veh/día", "Usuario"
         elif key == "k3_design_hour_factor":
             label, unit, origin = "K3", "fracción", "Usuario"
-        elif key == "direction_share_percent":
-            label, unit, origin = "D del sentido analizado", "%", "Usuario"
+        elif key == "major_direction_percent":
+            label, unit, origin = "Categoría direccional HCM (Exhibit 20-12)", "% / %", "Usuario; fuente del reparto"
+            value = f"{int(value)}/{100 - int(value)}" if value is not None else value
+        elif key == "analysis_direction_is_major":
+            label, unit, origin = "Sentido de pendiente", "", "Usuario; mayor/menor flujo"
+            value = ("Mayor flujo" if value else "Menor flujo") if value is not None else value
         else:
             label, unit, origin = key.replace("_", " "), _UNITS.get(key, ""), "Usuario"
         rows.append({"Dato": label, "Valor": _format(value), "Unidad": unit, "Origen": origin})

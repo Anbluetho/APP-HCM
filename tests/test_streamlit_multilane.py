@@ -17,7 +17,6 @@ class TwoLaneStreamlitTests(unittest.TestCase):
             "shoulder_width_m": 1.2,
             "design_demand_tpda": 16000.0,
             "design_demand_k3": 0.10,
-            "design_demand_direction_share": 50.0,
             "peak_hour_factor": 0.95,
             "trucks_percent": 14.0,
             "recreational_vehicles_percent": 4.0,
@@ -29,6 +28,7 @@ class TwoLaneStreamlitTests(unittest.TestCase):
         app.selectbox(key="hcm_major_direction_split").set_value(50)
         app.selectbox(key="terrain").set_value("ondulado")
         app.selectbox(key="highway_class").set_value("I")
+        self.assertFalse(any(widget.key == "design_demand_direction_share" for widget in app.number_input))
         app.button(key="calculate_analysis").click().run()
 
         self.assertEqual(len(app.exception), 0)
@@ -52,7 +52,6 @@ class TwoLaneStreamlitTests(unittest.TestCase):
             "specific_grade_length_km": 1.2,
             "design_demand_tpda": 1000.0,
             "design_demand_k3": 0.9,
-            "design_demand_direction_share": 66.6666666667,
             "specific_grade_phf": 0.95,
             "specific_grade_analysis_trucks": 10.0,
             "specific_grade_analysis_rvs": 2.0,
@@ -66,7 +65,9 @@ class TwoLaneStreamlitTests(unittest.TestCase):
         }
         for key, value in values.items():
             app.number_input(key=key).set_value(value)
+        app.selectbox(key="hcm_major_direction_split").set_value(60)
         app.selectbox(key="specific_grade_highway_class").set_value("I")
+        app.radio(key="specific_grade_flow_role").set_value("Mayor flujo")
         app.selectbox(key="specific_grade_crawl_condition").set_value("No")
         app.button(key="calculate_analysis").click().run()
 
@@ -74,6 +75,9 @@ class TwoLaneStreamlitTests(unittest.TestCase):
         result = app.session_state["hcm_specific_grade_result"]
         self.assertIn(result.final_results["level_of_service"], "ABCDEF")
         self.assertEqual(result.final_results["capacity_pc_per_h_direction"], 1700.0)
+        self.assertAlmostEqual(result.inputs["analysis_volume_veh_per_h"], 540.0)
+        self.assertAlmostEqual(result.inputs["opposing_volume_veh_per_h"], 360.0)
+        self.assertNotIn("direction_share_percent", result.inputs)
 
     def test_specific_grade_form_explains_missing_crawl_inputs(self) -> None:
         app = AppTest.from_file(
@@ -85,7 +89,6 @@ class TwoLaneStreamlitTests(unittest.TestCase):
             "specific_grade_length_km": 1.2,
             "design_demand_tpda": 1000.0,
             "design_demand_k3": 0.9,
-            "design_demand_direction_share": 66.6666666667,
             "specific_grade_phf": 0.95,
             "specific_grade_analysis_trucks": 10.0,
             "specific_grade_analysis_rvs": 2.0,
@@ -99,7 +102,9 @@ class TwoLaneStreamlitTests(unittest.TestCase):
         }
         for key, value in values.items():
             app.number_input(key=key).set_value(value)
+        app.selectbox(key="hcm_major_direction_split").set_value(60)
         app.selectbox(key="specific_grade_highway_class").set_value("I")
+        app.radio(key="specific_grade_flow_role").set_value("Mayor flujo")
         app.selectbox(key="specific_grade_crawl_condition").set_value("Sí")
         app.button(key="calculate_analysis").click().run()
 

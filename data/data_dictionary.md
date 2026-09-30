@@ -18,11 +18,10 @@ procedimiento exacto.
 | `geometry.shoulder_width_m` | Ancho de berma | Ancho reportado de berma. | m | Usuario; requerida para dos carriles; multicarril usa despeje lateral total. |
 | `traffic.tpda_veh_per_day` | TPDA | Tráfico promedio diario anual ingresado por el usuario. | veh/día | Usuario; debe ser positivo. |
 | `traffic.k3_design_hour_factor` | K3 | Fracción de TPDA correspondiente a la hora de diseño. | Fracción (0, 1] | Dato de usuario sustentado por fuente de diseño/jurisdicción; no es factor HCM ni tiene default. |
-| `traffic.direction_share_percent` | D | Proporción de VHD asignada al sentido analizado (o de mayor flujo en el procedimiento general). | % (0–100) | Dato de usuario; el sentido se interpreta según el procedimiento seleccionado. |
 | `traffic.vhd_two_way_veh_per_h` | VHD bidireccional | TPDA × K3. | veh/h | Calculado por `calculations/design_hour_volume.py`, antes del procedimiento HCM. |
-| `traffic.vhd_analysis_direction_veh_per_h`, `traffic.vhd_opposing_direction_veh_per_h` | VHD direccional | Desagregación del VHD total con D. | veh/h | Calculado como VHD×D y VHD−VHD direccional analizado. |
+| `traffic.vhd_analysis_direction_veh_per_h`, `traffic.vhd_opposing_direction_veh_per_h` | VHD direccional | Desagregación del VHD total con la categoría direccional seleccionada. | veh/h | Calculado con la proporción mayor/opuesta de Exhibit 20-12; no se solicita D aparte. |
 | `traffic.peak_hour_factor` | Factor de hora pico | PHF suministrado por el usuario. | Adimensional, (0,1] | Entrada explícita; no se asigna valor por defecto. |
-| `traffic.major_direction_percent` | Categoría direccional HCM | Categoría mayor/opuesto elegida para el lookup de Exhibit 20-12. | % tabulado: 50, 60, 70, 80, 90 | Usuario; selección explícita. No se deduce ni redondea automáticamente desde D. |
+| `traffic.major_direction_percent` | Categoría direccional HCM | Reparto mayor/opuesto utilizado tanto para desagregar VHD como para las consultas HCM que lo requieren. | % tabulado: 50, 60, 70, 80, 90 | Usuario; fuente única del reparto direccional: Exhibit 20-12. |
 | `traffic.trucks_percent`, `traffic.recreational_vehicles_percent` | Proporciones de camiones/buses y RV | Porcentajes observados, capturados separadamente. | % (suma ≤100) | Entradas para Eq. 20-4; equivalencias se consultan en Exhibits 20-9/20-10. |
 | `operation.terrain` | Terreno | Plano, ondulado, montañoso o escarpado. | Categoría | Para dos carriles, plano/nivel u ondulado tienen tablas; para multicarril, plano, ondulado y montañoso aparecen en Tabla 19 del PDF secundario. Escarpado queda sin calcular por falta de equivalencias. |
 | `operation.highway_class` | Clase HCM | Clase I, II o III. | Categoría | La interfaz reconoce las tres definiciones; el cálculo actual admite I/II. Clase III requiere el criterio PFFS del HCM 2000, aún pendiente de incorporar/verificar. |
@@ -44,10 +43,10 @@ multicarril, descrito a continuación.
 
 | Campo | Descripción | Unidad/formato | Fuente/estado |
 |---|---|---|---|
-| `tpda_veh_per_day`, `k3_design_hour_factor`, `direction_share_percent` | Entradas locales de demanda | veh/día, fracción, % | Usuario; conversión previa con VHD=TPDA×K3 y desagregación con D |
+| `tpda_veh_per_day`, `k3_design_hour_factor` | Entradas locales de demanda | veh/día, fracción | Usuario; conversión previa con VHD=TPDA×K3 |
 | `hourly_volume_veh_per_h` | VHD horario bidireccional calculado | veh/h | Resultado de la conversión previa TPDA/K3; entrada del Capítulo 20 |
 | `peak_hour_factor` | Factor de hora pico | adimensional, (0,1] | PHF explícito del analista; no se asigna valor por defecto |
-| `major_direction_percent` | Categoría direccional para Exhibit 20-12 | %: 50, 60, 70, 80 o 90 | Selección explícita del usuario dentro de las categorías tabuladas; se conserva separada de D |
+| `major_direction_percent` | Categoría direccional para Exhibit 20-12 | %: 50, 60, 70, 80 o 90 | Selección única del usuario; también distribuye el VHD por sentido |
 | `trucks_percent`, `recreational_vehicles_percent` | Proporción de camiones/buses y RV | % independiente, suma ≤100 | Usuario; equivalencias separadas para ATS y PTSF en Exhibits 20-9/20-10 |
 | `terrain` | Terreno | `level` o `rolling` | Usuario; categorías del procedimiento de segmento extendido |
 | `highway_class` | Clase de carretera para criterio LOS | I o II | Usuario; Exhibit 20-2/20-4 |
@@ -77,15 +76,16 @@ marca como secundaria pendiente de cotejo con el manual original.
 ## Entradas de pendiente específica (dos carriles)
 
 Estas entradas alimentan `models/specific_grade.py`. Vd y Vo se derivan de
-TPDA, K3 y D antes del motor direccional HCM. La longitud de pendiente se
+TPDA, K3 y la categoría direccional de Exhibit 20-12 antes del motor direccional HCM. La longitud de pendiente se
 reporta por separado de la longitud total del segmento.
 
 | Campo | Descripción | Unidad/formato | Fuente/estado |
 |---|---|---|---|
 | `analysis_grade_direction` | Ascenso o descenso en el sentido analizado | `upgrade` / `downgrade` | Usuario; determina el sentido opuesto inverso. |
 | `grade_percent`, `grade_length_km` | Pendiente y su longitud | %, km | Usuario; HCM 2000 Cap. 20 indica pendiente ≥3 %; ascenso específico desde 0,4 km (obligatorio desde 1 km); descenso desde 1 km. |
-| `tpda_veh_per_day`, `k3_design_hour_factor`, `direction_share_percent` | Entradas para demanda de diseño | veh/día, fracción, % | Usuario; se usan en la etapa previa al HCM. D es la proporción asignada al sentido de la pendiente analizada. |
-| `analysis_volume_veh_per_h`, `opposing_volume_veh_per_h` | VHD del sentido analizado y opuesto | veh/h | Calculado desde TPDA×K3 y D; luego se convierten separadamente a flujo equivalente en cada rama ATS/PTSF. |
+| `tpda_veh_per_day`, `k3_design_hour_factor`, `major_direction_percent` | Entradas para demanda de diseño | veh/día, fracción, categoría Exhibit 20-12 | Usuario; la categoría es la única fuente del reparto direccional. |
+| `analysis_direction_is_major` | Correspondencia entre dirección de pendiente y flujo | Booleano (mayor/menor) | Usuario; identifica cuál parte del reparto de Exhibit 20-12 corresponde al sentido de la pendiente. |
+| `analysis_volume_veh_per_h`, `opposing_volume_veh_per_h` | VHD del sentido analizado y opuesto | veh/h | Calculado desde TPDA×K3 y la categoría direccional; luego se convierten separadamente a flujo equivalente en cada rama ATS/PTSF. |
 | `peak_hour_factor` | PHF observado/aportado | (0,1] | Usuario; no se asigna valor por defecto. |
 | `analysis_trucks_percent`, `analysis_rvs_percent`, `opposing_trucks_percent`, `opposing_rvs_percent` | Composición vehicular por sentido | % (suma ≤100 por sentido) | Usuario; las equivalencias se obtienen de exhibits distintos para ATS y PTSF. |
 | `highway_class` | Clase HCM de la carretera | I o II | Usuario; criterio LOS del Cap. 20. |

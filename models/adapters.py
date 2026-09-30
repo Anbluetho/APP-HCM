@@ -58,7 +58,6 @@ def to_two_lane_highway_inputs(data: AnalysisInput) -> TwoLaneHighwayInputs:
         ),
         tpda_veh_per_day=demand.tpda_veh_per_day,
         k3_design_hour_factor=demand.k3_design_hour_factor,
-        direction_share_percent=demand.direction_share_percent,
     )
 
 
@@ -104,11 +103,11 @@ def to_multilane_highway_inputs(data: AnalysisInput) -> MultilaneHighwayInputs:
 
 
 def _design_hour_demand(traffic: TrafficInputs) -> DesignHourVolume:
-    """Return calculated VHD from the three required local demand inputs."""
+    """Return calculated VHD from TPDA, K3 and Exhibit 20-12 category."""
     required = {
         "tpda_veh_per_day": traffic.get("tpda_veh_per_day"),
         "k3_design_hour_factor": traffic.get("k3_design_hour_factor"),
-        "direction_share_percent": traffic.get("direction_share_percent"),
+        "major_direction_percent": traffic.get("major_direction_percent"),
     }
     missing = [name for name, value in required.items() if value is None]
     if missing:
@@ -116,5 +115,5 @@ def _design_hour_demand(traffic: TrafficInputs) -> DesignHourVolume:
     return calculate_design_hour_volume(
         float(required["tpda_veh_per_day"]),
         float(required["k3_design_hour_factor"]),
-        float(required["direction_share_percent"]),
+        float(required["major_direction_percent"]),
     )

@@ -206,11 +206,20 @@ class SpecificGradeAnalyzer:
             }
             if inputs.tpda_veh_per_day is not None:
                 intermediate["design_hour_volume_conversion"] = {
-                    "equation": "VHD = TPDA × K3; sentido analizado = VHD × D; opuesto = VHD − analizado",
+                    "equation": (
+                        "VHD = TPDA × K3; reparto según Exhibit 20-12; "
+                        "la dirección analizada utiliza la fracción mayor o menor elegida"
+                    ),
                     "vhd_two_way_veh_per_h": inputs.tpda_veh_per_day * inputs.k3_design_hour_factor,
+                    "major_direction_percent": inputs.major_direction_percent,
+                    "analysis_direction_share_percent": (
+                        inputs.major_direction_percent
+                        if inputs.analysis_direction_is_major
+                        else 100 - inputs.major_direction_percent
+                    ),
                     "vhd_analysis_direction_veh_per_h": inputs.analysis_volume_veh_per_h,
                     "vhd_opposing_direction_veh_per_h": inputs.opposing_volume_veh_per_h,
-                    "source_category": "Parámetros de demanda ingresados; etapa previa al HCM",
+                    "source_category": "Categoría direccional HCM 2000, Exhibit 20-12",
                 }
             if at_capacity:
                 return CalculationResult(
@@ -385,20 +394,23 @@ class SpecificGradeAnalyzer:
 
     @staticmethod
     def _with_design_hour_volumes(inputs: SpecificGradeInputs) -> SpecificGradeInputs:
-        """Derive directional hourly volumes when TPDA/K3/D were supplied."""
+        """Derive hourly volumes using the selected Exhibit 20-12 category."""
         demand_values = (
             inputs.tpda_veh_per_day,
             inputs.k3_design_hour_factor,
-            inputs.direction_share_percent,
+            inputs.major_direction_percent,
         )
         if all(value is None for value in demand_values):
             return inputs  # Compatibility for direct engine callers with observed Vd/Vo.
         if any(value is None for value in demand_values):
-            raise CalculationInputError("Para derivar los volúmenes por sentido, ingrese TPDA, K3 y D.")
+            raise CalculationInputError("Para derivar los volúmenes por sentido, ingrese TPDA, K3 y la categoría direccional HCM (Exhibit 20-12).")
+        if inputs.analysis_direction_is_major is None:
+            raise CalculationInputError("Indique si la pendiente analizada corresponde al sentido de mayor o menor flujo.")
         demand = calculate_design_hour_volume(
             float(inputs.tpda_veh_per_day),
             float(inputs.k3_design_hour_factor),
-            float(inputs.direction_share_percent),
+            float(inputs.major_direction_percent),
+            analysis_direction_is_major=inputs.analysis_direction_is_major,
         )
         return replace(
             inputs,

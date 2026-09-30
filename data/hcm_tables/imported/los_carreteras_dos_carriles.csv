@@ -1,0 +1,13 @@
+﻿highway_class,LOS,PTSF_percent,ATS_kmh
+I,A,<=35,>90
+I,B,>35-50,>80-90
+I,C,>50-65,>70-80
+I,D,>65-80,>60-70
+I,E,>80,<=60
+I,F,flow_exceeds_capacity,
+II,A,<=40,
+II,B,>40-55,
+II,C,>55-70,
+II,D,>70-85,
+II,E,>85,
+II,F,flow_exceeds_capacity,

@@ -1,0 +1,365 @@
+{
+  "schema_version": 1,
+  "source_documents": [
+    {
+      "filename": "HCM_K20.pdf",
+      "sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "source_type": "user_supplied_primary_manual_chapter",
+      "visible_subject": "Highway Capacity Manual 2000, Chapter 20 Two-Lane Highways",
+      "source_note": "Ejemplar del capítulo 20 suministrado por el usuario; cotejo limitado a las tablas/ecuaciones referenciadas en este registro. No se copia el PDF al repositorio."
+    },
+    {
+      "filename": "C06_RDA1_Capacidad_NDS_2carriles.pdf",
+      "sha256": "40f1e44c1b361953bb69cc235460bd23fe50cf87ad81706eda29d41dc56bc009",
+      "source_type": "secondary_academic_presentation",
+      "visible_subject": "Presentación académica PUCE sobre HCM 2000 para carreteras de dos carriles",
+      "embedded_pdf_title": "Estudio de reputación e impacto de PUCE",
+      "metadata_warning": "El título PDF interno no coincide con el tema visible; fuente secundaria de los CSV recibidos."
+    }
+  ],
+  "tables": [
+    {
+      "id": "two_lane_highway_pending",
+      "status": "pending",
+      "category": "lookup_table",
+      "source_type": "not_yet_identified",
+      "verification_status": "pending",
+      "source_document": "HCM_K20.pdf; CSV suministrados por el usuario",
+      "name": "Otros datos/tablas de carreteras de dos carriles no incluidos en los CSV recibidos",
+      "source": "HCM 2000, capítulo 20; alcance del paquete importado pendiente de ampliación",
+      "chapter_section": "Capítulo 20; tablas no incluidas en el conjunto actual",
+      "description": "Marcador de cobertura: solo se incorporan los archivos CSV incluidos en el ZIP recibido y cotejados aquí.",
+      "units": "Pendientes de verificar por variable",
+      "variables": [],
+      "version": "Pendiente de revisión de fuente primaria",
+      "observations": "Los procedimientos y tablas adicionales siguen fuera del alcance; no asumir que el conjunto de datos es exhaustivo para ejecutar todo el capítulo 20.",
+      "file": null
+    },
+    {
+      "id": "los_carreteras_dos_carriles",
+      "status": "available",
+      "category": "classification_criteria",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Criterios LOS para carreteras de dos carriles, clases I y II",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibits 20-2 (PDF p. 7 / impresa 20-3) y 20-4 (PDF p. 8 / impresa 20-4)",
+      "description": "Registros de criterios LOS transcritos para las clases I y II que aparecen en el CSV.",
+      "units": {
+        "highway_class": "categoría",
+        "LOS": "categoría",
+        "PTSF_percent": "%",
+        "ATS_kmh": "km/h o criterio textual"
+      },
+      "variables": [
+        "highway_class",
+        "LOS",
+        "PTSF_percent",
+        "ATS_kmh"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "Los registros incluidos fueron cotejados con la tabla/exhibición HCM indicada. Las unidades y el alcance siguen siendo los del procedimiento de segmentos bidireccionales de dos carriles en capítulo 20.",
+      "file": "imported/los_carreteras_dos_carriles.csv",
+      "source_csv_sha256": "8c20d42a7112b71679720fac6ddbfe58a53f3f676dd48b006e7be8cfdad45c93",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "tabla_20_10_equivalentes_ptsf",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-10: equivalentes para determinar PTSF",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-10 (PDF p. 12 / impresa 20-8)",
+      "description": "Equivalentes de vehículos pesados/recreacionales que muestra la presentación para PTSF.",
+      "units": {
+        "vehicle_type": "categoría",
+        "two_way_flow_pcph_range": "pc/h, rango textual",
+        "directional_flow_pcph_range": "pc/h, rango textual",
+        "terrain": "categoría",
+        "equivalent": "adimensional"
+      },
+      "variables": [
+        "vehicle_type",
+        "two_way_flow_pcph_range",
+        "directional_flow_pcph_range",
+        "terrain",
+        "equivalent"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "El capítulo 20 incluye las filas de RV que aparecen en el CSV; el tachado observado en la presentación secundaria no aparece en la tabla del manual cotejado.",
+      "file": "imported/tabla_20_10_equivalentes_PTSF.csv",
+      "source_csv_sha256": "9eb39117fb95caebf68fb8a370697f8b4752f87fa18c3bc409f3dc00c084579b",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "tabla_20_12_fd_np",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-12: incremento PTSF por distribución direccional y zonas de no rebase",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-12 (PDF p. 15 / impresa 20-11)",
+      "description": "Incremento PTSF presentado por división direccional, flujo y proporción de zonas de no rebase.",
+      "units": {
+        "directional_split": "% por sentido, etiqueta textual",
+        "vp_pcph": "pc/h, etiqueta textual",
+        "no_passing_zones_pct": "%",
+        "fd_np_increment_ptsf_pct": "% PTSF"
+      },
+      "variables": [
+        "directional_split",
+        "vp_pcph",
+        "no_passing_zones_pct",
+        "fd_np_increment_ptsf_pct"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "El HCM rotula la primera fila como ≤200 para todos los repartos; las etiquetas numéricas inconsistentes del CSV original se normalizaron en reviewed/ sin modificar imported/. También se conservaron literalmente los valores numéricos impresos en la fuente, incluido cualquier comportamiento no monótono.",
+      "file": "reviewed/tabla_20_12_fd_np.csv",
+      "source_csv_sha256": "b768e77c4b52c9fc52fcda68686cfc811d49ec8ba2c3906cd0eea4d385b6b7a3",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20.",
+      "normalized_csv_sha256": "f4135f4f26022a6460202eeb80d0854ac40118bf5bda6dd0fa31144fb707e0e1"
+    },
+    {
+      "id": "tabla_20_6_fa",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-6: ajuste por densidad de puntos de acceso",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-6 (PDF p. 10 / impresa 20-6)",
+      "description": "Reducción de FFS por densidad de puntos de acceso, según la presentación.",
+      "units": {
+        "access_points_per_km": "puntos de acceso/km",
+        "fA_reduction_kmh": "km/h"
+      },
+      "variables": [
+        "access_points_per_km",
+        "fA_reduction_kmh"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "Los registros incluidos fueron cotejados con la tabla/exhibición HCM indicada. Las unidades y el alcance siguen siendo los del procedimiento de segmentos bidireccionales de dos carriles en capítulo 20.",
+      "file": "imported/tabla_20_6_fA.csv",
+      "source_csv_sha256": "38b747fb58d821ecc20877ab17a418e1cda245b6d1f561cc1de2a46e76cf0332",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "formulas_hcm_2_carriles_reference",
+      "status": "available",
+      "category": "formula_reference",
+      "source_type": "manual_verified_text_reference",
+      "verification_status": "reference_only",
+      "source_document": "HCM_K20.pdf",
+      "name": "Resumen de fórmulas rotuladas HCM para dos carriles",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Equations 20-3 through 20-7 (PDF pp. 10-14 / impresas 20-6 through 20-10)",
+      "description": "Expresiones y descripciones incluidas en el resumen de clase; se archivan como referencia textual, no como código de cálculo.",
+      "units": {
+        "formula_id": "identificador textual",
+        "expression": "expresión textual",
+        "description": "texto",
+        "unit": "texto de unidad"
+      },
+      "variables": [
+        "formula_id",
+        "expression",
+        "description",
+        "unit"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "Expresiones conservadas solo como texto de referencia; el motor matemático no las ejecuta ni se implementa en esta fase. Cotejo de expresiones incluidas con ecuaciones 20-3 a 20-7; revisión no equivale a implementación validada.",
+      "file": "imported/formulas_hcm_2_carriles.csv",
+      "source_csv_sha256": "b81787bcb0e47ba2bec7fdddbbefef62acc7c71baf05322b6a4af2476d2d3650",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "tabla_20_9_equivalentes_velocidad",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-9: equivalentes para determinar velocidades de viaje",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-9 (PDF p. 12 / impresa 20-8)",
+      "description": "Equivalentes de vehículos pesados/recreacionales para velocidad de viaje que muestra la presentación.",
+      "units": {
+        "vehicle_type": "categoría",
+        "two_way_flow_pcph_range": "pc/h, rango textual",
+        "directional_flow_pcph_range": "pc/h, rango textual",
+        "terrain": "categoría",
+        "equivalent": "adimensional"
+      },
+      "variables": [
+        "vehicle_type",
+        "two_way_flow_pcph_range",
+        "directional_flow_pcph_range",
+        "terrain",
+        "equivalent"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "El capítulo 20 incluye las filas de RV que aparecen en el CSV; el tachado observado en la presentación secundaria no aparece en la tabla del manual cotejado.",
+      "file": "imported/tabla_20_9_equivalentes_velocidad.csv",
+      "source_csv_sha256": "83284254bfeef62def06a8345efa9383ca3d9321e780ce2f44bd949c633ca109",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "tabla_20_7_fg_velocidad",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-7: factor fG para velocidades de viaje",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-7 (PDF p. 11 / impresa 20-7)",
+      "description": "Factor asociado con rangos de flujo y tipo de terreno para velocidades de viaje, según la presentación.",
+      "units": {
+        "two_way_flow_pcph_range": "pc/h, rango textual",
+        "directional_flow_pcph_range": "pc/h, rango textual",
+        "terrain": "categoría",
+        "fG": "adimensional"
+      },
+      "variables": [
+        "two_way_flow_pcph_range",
+        "directional_flow_pcph_range",
+        "terrain",
+        "fG"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "Los registros incluidos fueron cotejados con la tabla/exhibición HCM indicada. Las unidades y el alcance siguen siendo los del procedimiento de segmentos bidireccionales de dos carriles en capítulo 20.",
+      "file": "imported/tabla_20_7_fG_velocidad.csv",
+      "source_csv_sha256": "06b2844acf5f40b331000564b569d33e7a8df2b03de986256cab71bfec74d05e",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "tabla_20_5_fls",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-5: ajuste por ancho de carril y espaldón",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-5 (PDF p. 10 / impresa 20-6)",
+      "description": "Reducción de FFS asociada con rangos de ancho de carril y espaldón.",
+      "units": {
+        "lane_width_m_range": "m, rango textual",
+        "shoulder_width_m_range": "m, rango textual",
+        "fLS_reduction_kmh": "km/h"
+      },
+      "variables": [
+        "lane_width_m_range",
+        "shoulder_width_m_range",
+        "fLS_reduction_kmh"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "Los registros incluidos fueron cotejados con la tabla/exhibición HCM indicada. Las unidades y el alcance siguen siendo los del procedimiento de segmentos bidireccionales de dos carriles en capítulo 20.",
+      "file": "imported/tabla_20_5_fLS.csv",
+      "source_csv_sha256": "ba38f08e3e435ab05b0c92300155459101c362b233bff3bbd008cee304951538",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "tabla_20_11_fnp",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-11: ajuste por zonas de no rebase sobre ATS",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-11 (PDF p. 14 / impresa 20-10)",
+      "description": "Reducción de velocidad de viaje promedio por flujo y porcentaje de zonas de no rebase.",
+      "units": {
+        "vp_pcph": "pc/h",
+        "no_passing_zones_pct": "%",
+        "fnp_reduction_kmh": "km/h"
+      },
+      "variables": [
+        "vp_pcph",
+        "no_passing_zones_pct",
+        "fnp_reduction_kmh"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "Los registros incluidos fueron cotejados con la tabla/exhibición HCM indicada. Las unidades y el alcance siguen siendo los del procedimiento de segmentos bidireccionales de dos carriles en capítulo 20.",
+      "file": "imported/tabla_20_11_fnp.csv",
+      "source_csv_sha256": "0017c9d47e197658312175ab01b7016a0d7eed1dc75687525a36a554ffb52bd6",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "tabla_20_8_fg_ptsf",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Tabla rotulada 20-8: factor fG para porcentaje de tiempo siguiendo",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Exhibit 20-8 (PDF p. 11 / impresa 20-7)",
+      "description": "Factor asociado con rangos de flujo y tipo de terreno para PTSF, según la presentación.",
+      "units": {
+        "two_way_flow_pcph_range": "pc/h, rango textual",
+        "directional_flow_pcph_range": "pc/h, rango textual",
+        "terrain": "categoría",
+        "fG": "adimensional"
+      },
+      "variables": [
+        "two_way_flow_pcph_range",
+        "directional_flow_pcph_range",
+        "terrain",
+        "fG"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "Los registros incluidos fueron cotejados con la tabla/exhibición HCM indicada. Las unidades y el alcance siguen siendo los del procedimiento de segmentos bidireccionales de dos carriles en capítulo 20.",
+      "file": "imported/tabla_20_8_fG_PTSF.csv",
+      "source_csv_sha256": "f82bddb6f42eab9e1155849f8a7cdb54716847a017624d56b0a02fbe70d1c26d",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20."
+    },
+    {
+      "id": "capacidad_dos_carriles_reference",
+      "status": "available",
+      "category": "capacity_reference",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Valores de capacidad resumidos para carreteras de dos carriles",
+      "source": "Highway Capacity Manual 2000, Chapter 20; PDF suministrado por el usuario (SHA-256: 114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a). CSV original: ZIP suministrado por el usuario.",
+      "chapter_section": "HCM 2000, cap. 20, Capacity (PDF p. 7 / impresa 20-3)",
+      "description": "Resumen de capacidad direccional y combinada tal como figura en la presentación.",
+      "units": {
+        "capacity_type": "categoría",
+        "capacity": "valor textual",
+        "unit": "unidad declarada"
+      },
+      "variables": [
+        "capacity_type",
+        "capacity",
+        "unit"
+      ],
+      "version": "CSV suministrado por el usuario, recibido 2026-09-28; el documento cita HCM 2000.",
+      "observations": "La tabla revisada distingue 1,700 pc/h por sentido y 3,200 pc/h combinados para longitudes extendidas; añade el rango explícito de 3,200–3,400 pc/h combinado que el CSV original omitía para tramos cortos como túneles o puentes. No extrapolarlo a tramos extendidos.",
+      "file": "reviewed/capacidad.csv",
+      "source_csv_sha256": "0249248265db91609abe0d3307781e03a9924312159c13217fdb22829822a737",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20.",
+      "normalized_csv_sha256": "506cb164c2556eeb95bfa723b1baf663a1c621ed64f8669b0e4df7df8876187c"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+﻿vehicle_type,two_way_flow_pcph_range,directional_flow_pcph_range,terrain,equivalent
+Camiones,0-600,0-300,Plano,1.1
+Camiones,0-600,0-300,Ondulado,1.8
+Camiones,>600-1200,>300-600,Plano,1.1
+Camiones,>600-1200,>300-600,Ondulado,1.5
+Camiones,>1200,>600,Plano,1.0
+Camiones,>1200,>600,Ondulado,1.0
+VR,0-600,0-300,Plano,1.0
+VR,0-600,0-300,Ondulado,1.0
+VR,>600-1200,>300-600,Plano,1.0
+VR,>600-1200,>300-600,Ondulado,1.0
+VR,>1200,>600,Plano,1.0
+VR,>1200,>600,Ondulado,1.0

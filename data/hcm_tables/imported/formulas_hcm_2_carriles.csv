@@ -1,0 +1,9 @@
+﻿formula_id,expression,description,unit
+PHF,V/(4*V15),Factor de hora pico,adimensional
+vp,V/(PHF*fG*fHV),Tasa de flujo equivalente,pc/h
+fHV,1/(1+PT*(ET-1)+PR*(ER-1)),Factor de vehículos pesados,adimensional
+FFS_field,SFM+0.0125*Vf/fHV,FFS estimada con medición de campo,km/h
+FFS_design,BFFS-fLS-fA,FFS con ajustes geométricos y de accesos,km/h
+ATS,FFS-0.0125*vp-fnp,Velocidad de viaje promedio,km/h
+PTSF,BPTSF+fd_np,Porcentaje de tiempo siguiendo,%
+BPTSF,100*(1-exp(-0.000879*vp)),Porcentaje base de tiempo siguiendo,%

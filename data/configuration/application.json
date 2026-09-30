@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "methodology": {
+    "name": "Highway Capacity Manual",
+    "edition": "2000",
+    "status": "requested_methodology; specific procedure pending validation"
+  },
+  "jurisdiction_parameters": {
+    "status": "pending",
+    "entries": [],
+    "observations": "No se han incorporado parámetros de Ecuador. Mantenerlos separados de las tablas HCM."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "name": "Tablas del procedimiento de carreteras multicarril",
+    "source": "C05-C07-Capacidad_2.pdf, documento proporcionado por el usuario, pp. 18-22",
+    "hcm_reference": "HCM 2000, Capítulo 12; transcripción secundaria en el documento citado",
+    "description": "Ajustes de velocidad libre, equivalencias por terreno y criterios tabulados de FFS, densidad, velocidad, v/c y flujo máximo para multicarril.",
+    "units": "km/h, pc/h/carril, pc/km/carril; factores adimensionales",
+    "version": "Transcripción revisada el 2026-09-29",
+    "verification_status": "secondary_source_unverified",
+    "observations": "Los valores fueron leídos del documento PUCE adjunto y aún requieren cotejo independiente con los exhibits del HCM 2000 original. No usar para certificación de diseño sin esa revisión. Interpolaciones del aplicativo se limitan al dominio tabulado."
+  },
+  "lane_width_adjustment": [
+    {"lane_width_m": 3.0, "reduction_kmh": 10.6},
+    {"lane_width_m": 3.1, "reduction_kmh": 8.1},
+    {"lane_width_m": 3.2, "reduction_kmh": 5.6},
+    {"lane_width_m": 3.3, "reduction_kmh": 3.1},
+    {"lane_width_m": 3.4, "reduction_kmh": 2.1},
+    {"lane_width_m": 3.5, "reduction_kmh": 1.0},
+    {"lane_width_m": 3.6, "reduction_kmh": 0.0}
+  ],
+  "lateral_clearance_adjustment": [
+    {"clearance_m": 0.0, "lanes_per_direction": 2, "reduction_kmh": 8.7},
+    {"clearance_m": 0.6, "lanes_per_direction": 2, "reduction_kmh": 5.8},
+    {"clearance_m": 1.2, "lanes_per_direction": 2, "reduction_kmh": 3.0},
+    {"clearance_m": 1.8, "lanes_per_direction": 2, "reduction_kmh": 2.1},
+    {"clearance_m": 2.4, "lanes_per_direction": 2, "reduction_kmh": 1.5},
+    {"clearance_m": 3.0, "lanes_per_direction": 2, "reduction_kmh": 0.6},
+    {"clearance_m": 3.6, "lanes_per_direction": 2, "reduction_kmh": 0.0},
+    {"clearance_m": 0.0, "lanes_per_direction": 3, "reduction_kmh": 6.3},
+    {"clearance_m": 0.6, "lanes_per_direction": 3, "reduction_kmh": 4.5},
+    {"clearance_m": 1.2, "lanes_per_direction": 3, "reduction_kmh": 2.7},
+    {"clearance_m": 1.8, "lanes_per_direction": 3, "reduction_kmh": 2.1},
+    {"clearance_m": 2.4, "lanes_per_direction": 3, "reduction_kmh": 1.5},
+    {"clearance_m": 3.0, "lanes_per_direction": 3, "reduction_kmh": 0.6},
+    {"clearance_m": 3.6, "lanes_per_direction": 3, "reduction_kmh": 0.0}
+  ],
+  "median_adjustment": {"divided": 0.0, "undivided": 2.6},
+  "access_adjustment": [
+    {"accesses_per_km": 0, "reduction_kmh": 0.0},
+    {"accesses_per_km": 6, "reduction_kmh": 4.0},
+    {"accesses_per_km": 12, "reduction_kmh": 8.0},
+    {"accesses_per_km": 18, "reduction_kmh": 12.0},
+    {"accesses_per_km": 24, "reduction_kmh": 16.0}
+  ],
+  "terrain_equivalencies": {
+    "plano": {"truck": 1.5, "recreational_vehicle": 1.2},
+    "ondulado": {"truck": 2.5, "recreational_vehicle": 2.0},
+    "montanoso": {"truck": 4.5, "recreational_vehicle": 4.0}
+  },
+  "speed_breakpoint_pc_per_h_per_lane": 1400,
+  "level_of_service_criteria": {
+    "100": {
+      "density_max_pc_per_km_per_lane": {"A": 7, "B": 11, "C": 16, "D": 22, "E": 25},
+      "speed_km_per_h": {"A": 100, "B": 100, "C": 98.4, "D": 91.5, "E": 88.0},
+      "volume_capacity_max": {"A": 0.32, "B": 0.50, "C": 0.72, "D": 0.92, "E": 1.0},
+      "flow_max_pc_per_h_per_lane": {"A": 700, "B": 1100, "C": 1575, "D": 2015, "E": 2200}
+    },
+    "90": {
+      "density_max_pc_per_km_per_lane": {"A": 7, "B": 11, "C": 16, "D": 22, "E": 26},
+      "speed_km_per_h": {"A": 90, "B": 90, "C": 89.8, "D": 84.7, "E": 80.8},
+      "volume_capacity_max": {"A": 0.30, "B": 0.47, "C": 0.68, "D": 0.89, "E": 1.0},
+      "flow_max_pc_per_h_per_lane": {"A": 630, "B": 990, "C": 1435, "D": 1860, "E": 2100}
+    },
+    "80": {
+      "density_max_pc_per_km_per_lane": {"A": 7, "B": 11, "C": 16, "D": 22, "E": 27},
+      "speed_km_per_h": {"A": 80, "B": 80, "C": 80, "D": 77.6, "E": 74.1},
+      "volume_capacity_max": {"A": 0.28, "B": 0.44, "C": 0.64, "D": 0.85, "E": 1.0},
+      "flow_max_pc_per_h_per_lane": {"A": 560, "B": 880, "C": 1280, "D": 1705, "E": 2000}
+    },
+    "70": {
+      "density_max_pc_per_km_per_lane": {"A": 7, "B": 11, "C": 16, "D": 22, "E": 28},
+      "speed_km_per_h": {"A": 70, "B": 70, "C": 70, "D": 69.6, "E": 67.9},
+      "volume_capacity_max": {"A": 0.26, "B": 0.41, "C": 0.59, "D": 0.81, "E": 1.0},
+      "flow_max_pc_per_h_per_lane": {"A": 490, "B": 770, "C": 1120, "D": 1530, "E": 1900}
+    }
+  }
+}

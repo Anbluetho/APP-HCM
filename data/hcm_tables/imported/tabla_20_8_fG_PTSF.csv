@@ -1,0 +1,7 @@
+﻿two_way_flow_pcph_range,directional_flow_pcph_range,terrain,fG
+0-600,0-300,Nivel,1.0
+0-600,0-300,Ondulado,0.77
+>600-1200,>300-600,Nivel,1.0
+>600-1200,>300-600,Ondulado,0.94
+>1200,>600,Nivel,1.0
+>1200,>600,Ondulado,1.0

@@ -4,11 +4,13 @@ import streamlit as st
 
 from calculations.exceptions import CalculationError
 from calculations.specific_grade import analyze_specific_grade
-from calculations.specific_grade.analyzer import SpecificGradeAnalyzer
+from calculations.specific_grade.analyzer import (
+    SpecificGradeAnalyzer,
+    verify_specific_grade_tables,
+)
 from calculations.two_lane_highway import analyze_two_way_segment
 from data.data_loader import DataLoader
 from data.procedure_verification import (
-    verify_specific_grade_tables,
     verify_two_lane_tables,
 )
 from models.adapters import to_two_lane_highway_inputs

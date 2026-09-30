@@ -3,7 +3,10 @@
 import unittest
 
 from calculations.exceptions import CalculationDataError, CalculationInputError
-from calculations.specific_grade.analyzer import SpecificGradeAnalyzer
+from calculations.specific_grade.analyzer import (
+    SpecificGradeAnalyzer,
+    verify_specific_grade_tables,
+)
 from calculations.specific_grade.flow import (
     calculate_crawl_heavy_vehicle_factor,
     calculate_directional_flow,
@@ -17,7 +20,6 @@ from calculations.specific_grade.performance import (
     lookup_ptsf_coefficients,
 )
 from data.data_loader import DataLoader
-from data.procedure_verification import verify_specific_grade_tables
 from models.specific_grade import SpecificGradeInputs
 
 

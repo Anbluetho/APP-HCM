@@ -98,13 +98,26 @@ class DataLoaderTests(unittest.TestCase):
 
         imported = [item for item in definitions if item.status == "available"]
         pending = [item for item in definitions if item.status == "pending"]
-        self.assertEqual(len(imported), 11)
+        self.assertEqual(len(imported), 21)
         self.assertEqual(len(pending), 1)
         verified = [item for item in imported if item.verification_status == "primary_source_verified"]
         references = [item for item in imported if item.verification_status == "reference_only"]
-        self.assertEqual(len(verified), 10)
+        self.assertEqual(len(verified), 20)
         self.assertEqual(len(references), 1)
-        self.assertEqual(len(project_loader.list_tables(include_pending=False)), 11)
+        self.assertEqual(len(project_loader.list_tables(include_pending=False)), 21)
+        verified_ids = {item.id for item in verified}
+        self.assertTrue({
+            "specific_grade_20_13_ats_fg",
+            "specific_grade_20_14_ptsf_fg",
+            "specific_grade_20_15_ats_et",
+            "specific_grade_20_16_ptsf_et_er",
+            "specific_grade_20_17_ats_er",
+            "specific_grade_20_18_crawl_etc",
+            "specific_grade_20_19_ats_fnp",
+            "specific_grade_20_20_ptsf_fnp",
+            "specific_grade_20_21_ptsf_coefficients",
+            "specific_downgrade_fg_reference",
+        }.issubset(verified_ids))
         # Every approved dataset is loadable by default; formulas remain gated.
         project_loader.validate_all()
         with self.assertRaises(TableNotVerifiedError):

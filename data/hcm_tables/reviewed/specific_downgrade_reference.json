@@ -1,0 +1,9 @@
+{
+  "records": [
+    {
+      "parameter": "fG",
+      "value": 1.0,
+      "condition": "Specific downgrade, HCM 2000 Chapter 20; the manual states that for most specific downgrades fG is 1.0."
+    }
+  ]
+}

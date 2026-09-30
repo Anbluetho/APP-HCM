@@ -23,6 +23,10 @@ validados del *Highway Capacity Manual 2000*.
   multicarril con tablas transcritas del PDF académico aportado. La procedencia
   de estas tablas es secundaria y queda visible; falta cotejo independiente con
   los exhibits del HCM 2000 original.
+- **Pendiente específica de dos carriles:** se incorporó una ruta direccional
+  separada para ascensos/descensos de al menos 3 %, respaldada por Exhibits
+  20-13 a 20-21 del capítulo 20. El motor bidireccional existente se conserva.
+  La ruta requiere datos medidos por sentido; no realiza conversión TPDA/K30.
 
 El formulario diferencia los procedimientos de dos carriles y multicarril.
 Otros tipos de instalaciones continúan fuera del alcance.
@@ -136,6 +140,36 @@ reproducen ejemplos publicados del capítulo 20. Ejecuta desde la raíz:
   Ecuador y resultados calculados.
 - Mantener unidades y metadatos de fuente junto a cada tabla, nunca dentro de
   las funciones de cálculo.
+
+### Pendiente específica direccional
+
+Al seleccionar **Pendiente específica**, la aplicación utiliza el motor
+`calculations/specific_grade/` y el modelo `models/specific_grade.py`. Las
+entradas son volumen horario observado por sentido, PHF, composición vehicular
+por sentido, pendiente y longitud de pendiente (independiente de la longitud
+total del tramo), clase HCM, geometría y zonas de no rebase. Se acepta 3 % o
+mayor; para ascensos el análisis específico es aplicable desde 0,4 km y es
+requerido desde 1,0 km; los descensos específicos requieren al menos 1,0 km.
+
+La demanda direccional de ATS y PTSF se calcula por ramas distintas y cada una
+converge iterativamente a su propia banda tabulada. Se usan los Exhibits 20-13
+a 20-21 y, para la condición de camiones a velocidad de arrastre, el Exhibit
+20-18 y la ecuación 20-14. El equipo debe ingresar la proporción de camiones a
+arrastre, su velocidad de arrastre y, cuando el sentido descendente es el
+opuesto al analizado, la BFFS de ese sentido; si faltan, la aplicación detiene
+el cálculo con el campo requerido.
+
+La capacidad direccional (1.700 pc/h por sentido) se recupera del registro
+documentado de capacidad de dos carriles. El cálculo direccional no usa la
+capacidad bidireccional de 3.200 pc/h ni K30. Los archivos CSV de los Exhibits
+20-13 a 20-21 se encuentran en `data/hcm_tables/reviewed/`; su procedencia,
+unidades, página fuente y revisión se registran en `registry.json`. El Exhibit
+20-18 no es un factor genérico: solo se consulta cuando se declara la condición
+de arrastre.
+
+`SpecificGradeAnalyzer` no sustituye ni cambia `TwoLaneHighwayAnalyzer`. La
+ruta general terreno nivel/ondulado continúa llamando al motor original; los
+resultados de pendiente específica se muestran en una vista separada.
 
 ## Motor de cálculo HCM 2000
 

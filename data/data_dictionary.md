@@ -69,6 +69,28 @@ marca como secundaria pendiente de cotejo con el manual original.
 | `driver_population_factor` | fP | 0,85; 0,90; 0,95; 1,00 | Selección explícita del usuario dentro de opciones descritas en el PDF |
 | Volumen, PHF, DIR, % camiones/RV, accesos y BFFS | Demanda y entorno operacional | Unidades del formulario | Se combinan con factores y criterios tabulados |
 
+## Entradas de pendiente específica (dos carriles)
+
+Estas entradas alimentan `models/specific_grade.py`. Vd y Vo son conteos
+horarios observados distintos; no son una desagregación automática de TPDA ni
+usan K30. La longitud de pendiente se reporta por separado de la longitud total
+del segmento.
+
+| Campo | Descripción | Unidad/formato | Fuente/estado |
+|---|---|---|---|
+| `analysis_grade_direction` | Ascenso o descenso en el sentido analizado | `upgrade` / `downgrade` | Usuario; determina el sentido opuesto inverso. |
+| `grade_percent`, `grade_length_km` | Pendiente y su longitud | %, km | Usuario; HCM 2000 Cap. 20 indica pendiente ≥3 %; ascenso específico desde 0,4 km (obligatorio desde 1 km); descenso desde 1 km. |
+| `analysis_volume_veh_per_h`, `opposing_volume_veh_per_h` | Volumen horario del sentido analizado y opuesto | veh/h | Usuario; se convierten separadamente a flujo equivalente direccional en cada rama ATS/PTSF. |
+| `peak_hour_factor` | PHF observado/aportado | (0,1] | Usuario; no se asigna valor por defecto. |
+| `analysis_trucks_percent`, `analysis_rvs_percent`, `opposing_trucks_percent`, `opposing_rvs_percent` | Composición vehicular por sentido | % (suma ≤100 por sentido) | Usuario; las equivalencias se obtienen de exhibits distintos para ATS y PTSF. |
+| `highway_class` | Clase HCM de la carretera | I o II | Usuario; criterio LOS del Cap. 20. |
+| `lane_width_m`, `shoulder_width_m`, `access_points_per_km` | Geometría utilizada para FFS | m, accesos/km | Usuario; ajustes de Exhibits 20-5 y 20-6. |
+| `no_passing_zones_percent` | Porcentaje de zonas de no rebase del sentido analizado | % (0–100) | Usuario; Exhibits 20-19 y 20-20. |
+| `base_free_flow_speed_analysis_km_per_h` | BFFS del sentido analizado | km/h | Usuario; sin valor HCM por defecto. |
+| `downhill_crawl_condition` | Presencia de camiones a velocidad de arrastre en el sentido descendente | Sí/no | Usuario; si Sí, activa Eq. 20-14/Exhibit 20-18. |
+| `downhill_trucks_at_crawl_percent`, `downhill_truck_crawl_speed_km_per_h` | Proporción de camiones a arrastre y velocidad de arrastre | % de camiones; km/h | Usuario/dato de campo; obligatorios si se declara la condición. |
+| `base_free_flow_speed_opposing_km_per_h` | BFFS del sentido descendente opuesto | km/h | Usuario; obligatorio si el arrastre ocurre en el sentido opuesto al analizado. |
+
 La función auxiliar PHF acepta V y el conteo de vehículos del intervalo de 15
 minutos pico y aplica la relación registrada en el CSV de fórmulas de referencia.
 El analizador principal, sin embargo, recibe PHF explícito: la fuente primaria

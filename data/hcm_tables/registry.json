@@ -360,6 +360,316 @@
       "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
       "review_method": "Cotejo de encabezados, categorías y valores transcritos contra texto/tablas visibles del capítulo 20.",
       "normalized_csv_sha256": "506cb164c2556eeb95bfa723b1baf663a1c621ed64f8669b0e4df7df8876187c"
+    },
+    {
+      "id": "specific_grade_20_13_ats_fg",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-13: fG para ATS en ascensos específicos",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-13 (PDF p. 19 / impresa 20-15).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-13 (PDF p. 19 / impresa 20-15)",
+      "description": "Factor de ajuste de pendiente para velocidad promedio en ascensos específicos.",
+      "units": {
+        "grade_min_pct": "%",
+        "grade_max_pct": "% o sin límite superior",
+        "grade_length_km": "km",
+        "directional_flow_range_pcph": "pc/h, rango direccional",
+        "fG": "adimensional"
+      },
+      "variables": [
+        "grade_min_pct",
+        "grade_max_pct",
+        "grade_length_km",
+        "directional_flow_range_pcph",
+        "fG"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se interpola linealmente solo entre longitudes tabuladas dentro de pendiente y rango de flujo; no se interpola entre rangos de flujo ni se extrapola por debajo de la longitud mínima.",
+      "file": "reviewed/exhibit_20_13_specific_upgrade_ats.csv",
+      "source_data_sha256": "d430e986f8a2fa0bd1f57442fe662cc0701571b76863a67a8ede10b72d751311",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_14_ptsf_fg",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-14: fG para PTSF en ascensos específicos",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-14 (PDF p. 20 / impresa 20-16).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-14 (PDF p. 20 / impresa 20-16)",
+      "description": "Factor de ajuste de pendiente para PTSF en ascensos específicos.",
+      "units": {
+        "grade_min_pct": "%",
+        "grade_max_pct": "% o sin límite superior",
+        "grade_length_km": "km",
+        "directional_flow_range_pcph": "pc/h, rango direccional",
+        "fG": "adimensional"
+      },
+      "variables": [
+        "grade_min_pct",
+        "grade_max_pct",
+        "grade_length_km",
+        "directional_flow_range_pcph",
+        "fG"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se interpola linealmente solo entre longitudes tabuladas dentro de pendiente y rango de flujo; no se interpola entre rangos de flujo ni se extrapola por debajo de la longitud mínima.",
+      "file": "reviewed/exhibit_20_14_specific_upgrade_ptsf.csv",
+      "source_data_sha256": "7c3d090e300d7a6cb8a7b13258755f66df41cb22f1e2202f95c09184f6374c3d",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_15_ats_et",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-15: ET para ATS en ascensos específicos",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-15 (PDF p. 21 / impresa 20-17).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-15 (PDF p. 21 / impresa 20-17)",
+      "description": "Equivalentes de camiones para velocidad promedio en ascensos específicos.",
+      "units": {
+        "grade_min_pct": "%",
+        "grade_max_pct": "% o sin límite superior",
+        "grade_length_km": "km",
+        "directional_flow_range_pcph": "pc/h, rango direccional",
+        "ET": "adimensional"
+      },
+      "variables": [
+        "grade_min_pct",
+        "grade_max_pct",
+        "grade_length_km",
+        "directional_flow_range_pcph",
+        "ET"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se interpola linealmente solo entre longitudes tabuladas dentro de pendiente y rango de flujo; no se interpola entre rangos de flujo ni se extrapola por debajo de la longitud mínima.",
+      "file": "reviewed/exhibit_20_15_specific_upgrade_truck_ats.csv",
+      "source_data_sha256": "a12a8e173670f5b4f6a648a28397d8e8ed0442d48521814d304c4dda5ebb1bdd",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_16_ptsf_et_er",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-16: ET y ER para PTSF en ascensos específicos",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-16 (PDF p. 22 / impresa 20-18).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-16 (PDF p. 22 / impresa 20-18)",
+      "description": "Equivalentes de camiones y RV para PTSF en ascensos específicos.",
+      "units": {
+        "grade_min_pct": "%",
+        "grade_max_pct": "% o sin límite superior",
+        "grade_length_km": "km",
+        "directional_flow_range_pcph": "pc/h, rango direccional",
+        "ET": "adimensional",
+        "ER": "adimensional"
+      },
+      "variables": [
+        "grade_min_pct",
+        "grade_max_pct",
+        "grade_length_km",
+        "directional_flow_range_pcph",
+        "ET",
+        "ER"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se interpola linealmente solo entre longitudes tabuladas dentro de pendiente y rango de flujo; no se interpola entre rangos de flujo ni se extrapola por debajo de la longitud mínima.",
+      "file": "reviewed/exhibit_20_16_specific_upgrade_truck_ptsf.csv",
+      "source_data_sha256": "f154e1d44903f87142e4c9476a7c865bc729edcc4c0fdff9c2206a83cd7813b9",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_17_ats_er",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-17: ER para ATS en ascensos específicos",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-17 (PDF p. 23 / impresa 20-19).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-17 (PDF p. 23 / impresa 20-19)",
+      "description": "Equivalentes de RV para velocidad promedio en ascensos específicos.",
+      "units": {
+        "grade_min_pct": "%",
+        "grade_max_pct": "% o sin límite superior",
+        "grade_length_km": "km",
+        "directional_flow_range_pcph": "pc/h, rango direccional",
+        "ER": "adimensional"
+      },
+      "variables": [
+        "grade_min_pct",
+        "grade_max_pct",
+        "grade_length_km",
+        "directional_flow_range_pcph",
+        "ER"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se interpola linealmente solo entre longitudes tabuladas dentro de pendiente y rango de flujo; no se interpola entre rangos de flujo ni se extrapola por debajo de la longitud mínima.",
+      "file": "reviewed/exhibit_20_17_specific_upgrade_rv_ats.csv",
+      "source_data_sha256": "eb07dbfda4834c28ef478ebc1bccde1fad658e5c6b7a032c3223d266d0de66b4",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_18_crawl_etc",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-18: ETC para camiones a velocidad de arrastre",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-18 (PDF p. 24 / impresa 20-20).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-18 (PDF p. 24 / impresa 20-20)",
+      "description": "Equivalentes de camiones a velocidad de arrastre en descensos largos y pronunciados.",
+      "units": {
+        "ffs_minus_crawl_speed_kmh_min": "km/h, diferencia FFS menos velocidad de arrastre",
+        "directional_flow_range_pcph": "pc/h, rango direccional",
+        "ETC": "adimensional"
+      },
+      "variables": [
+        "ffs_minus_crawl_speed_kmh_min",
+        "directional_flow_range_pcph",
+        "ETC"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se interpola ETC en función de la diferencia entre FFS descendente y velocidad de arrastre, dentro de cada rango direccional de flujo.",
+      "file": "reviewed/exhibit_20_18_crawl_truck_equivalency.csv",
+      "source_data_sha256": "85d58a18403fcffcaf4151879d96f69fa714482fcccbf85923f41fb18979acce",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_19_ats_fnp",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-19: fnp para ATS direccional",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-19 (PDF p. 25 / impresa 20-21).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-19 (PDF p. 25 / impresa 20-21)",
+      "description": "Ajuste ATS por porcentaje de zonas de no rebase en segmentos direccionales.",
+      "units": {
+        "ffs_kmh": "km/h",
+        "opposing_flow_pcph": "pc/h",
+        "no_passing_zones_pct": "%",
+        "fnp_kmh": "km/h"
+      },
+      "variables": [
+        "ffs_kmh",
+        "opposing_flow_pcph",
+        "no_passing_zones_pct",
+        "fnp_kmh"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se aplica interpolación multilineal entre FFS, flujo opuesto y porcentaje de zonas de no rebase dentro de los dominios tabulados.",
+      "file": "reviewed/exhibit_20_19_directional_ats_no_passing.csv",
+      "source_data_sha256": "c7c1b298e412afca560b77cb6a4cf1e3c4c922a34d1bbf2775fa4571b6b63055",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_20_ptsf_fnp",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-20: fnp para PTSF direccional",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-20 (PDF p. 27 / impresa 20-23).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-20 (PDF p. 27 / impresa 20-23)",
+      "description": "Ajuste PTSF por porcentaje de zonas de no rebase en segmentos direccionales.",
+      "units": {
+        "ffs_kmh": "km/h",
+        "opposing_flow_pcph": "pc/h",
+        "no_passing_zones_pct": "%",
+        "fnp_ptsf_pct": "puntos porcentuales de PTSF"
+      },
+      "variables": [
+        "ffs_kmh",
+        "opposing_flow_pcph",
+        "no_passing_zones_pct",
+        "fnp_ptsf_pct"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Se aplica interpolación multilineal entre FFS, flujo opuesto y porcentaje de zonas de no rebase dentro de los dominios tabulados.",
+      "file": "reviewed/exhibit_20_20_directional_ptsf_no_passing.csv",
+      "source_data_sha256": "00ead07230fd482268b078b4788200d933da5c8af01cd063543f4e8cd19b876a",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_grade_20_21_ptsf_coefficients",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Exhibit 20-21: coeficientes PTSF direccional",
+      "source": "HCM 2000 Chapter 20, Exhibit 20-21 (PDF p. 28 / impresa 20-24).",
+      "chapter_section": "HCM 2000, Chapter 20, Exhibit 20-21 (PDF p. 28 / impresa 20-24)",
+      "description": "Coeficientes a y b para estimar el PTSF base direccional.",
+      "units": {
+        "opposing_flow_pcph": "pc/h",
+        "a": "coeficiente de Eq. 20-17",
+        "b": "exponente de Eq. 20-17",
+        "opposing_flow_pcph_min": "pc/h",
+        "opposing_flow_pcph_max": "pc/h"
+      },
+      "variables": [
+        "opposing_flow_pcph",
+        "a",
+        "b",
+        "opposing_flow_pcph_min",
+        "opposing_flow_pcph_max"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado visualmente el 2026-09-29.",
+      "observations": "Valores transcritos de HCM_K20.pdf y revisados visualmente. Los coeficientes a y b se interpolan linealmente según el flujo opuesto tabulado.",
+      "file": "reviewed/exhibit_20_21_ptsf_coefficients.csv",
+      "source_data_sha256": "4c7467051568f69f88225675945313a1fd6c6972b9dc5aad90048369f09d72ea",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Extracción de texto/posiciones del PDF primario y revisión visual de las páginas tabulares."
+    },
+    {
+      "id": "specific_downgrade_fg_reference",
+      "status": "available",
+      "category": "lookup_table",
+      "source_type": "user_supplied_primary_manual",
+      "verification_status": "primary_source_verified",
+      "source_document": "HCM_K20.pdf",
+      "name": "Referencia fG para descensos específicos",
+      "source": "HCM 2000 Chapter 20, Analysis of downgrades (PDF p. 18 / impresa 20-14).",
+      "chapter_section": "HCM 2000 Chapter 20, Analysis of downgrades (PDF p. 18 / impresa 20-14)",
+      "description": "Parámetro documentado para fG en descensos específicos.",
+      "units": {
+        "parameter": "símbolo",
+        "value": "adimensional",
+        "condition": "condición de aplicación"
+      },
+      "variables": [
+        "parameter",
+        "value",
+        "condition"
+      ],
+      "version": "HCM 2000; transcrito del PDF primario y revisado el 2026-09-29.",
+      "observations": "El manual indica fG=1.0 para la mayoría de descensos específicos; el valor se mantiene fuera de las funciones matemáticas. Requiere criterio normativo si una condición excepcional no está representada.",
+      "file": "reviewed/specific_downgrade_reference.json",
+      "source_data_sha256": "b3a4f2f84f47323713a9b7180388c432d70c2bd6650b0096e50818e9fd78b5d6",
+      "manual_pdf_sha256": "114ba8baf50ecffde9ce47b7183366d9a8aa65ccc41498b38d2dba6839bb907a",
+      "review_method": "Cotejo del texto metodológico del PDF primario, página 18."
     }
   ]
 }

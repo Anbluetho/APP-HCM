@@ -20,6 +20,25 @@ REQUIRED_TWO_LANE_TABLES = (
     ("capacidad_dos_carriles_reference", "Capacidad bidireccional y por sentido"),
 )
 
+REQUIRED_SPECIFIC_GRADE_TABLES = (
+    ("specific_grade_20_13_ats_fg", "fG de ATS en ascenso específico (Exhibit 20-13)"),
+    ("specific_grade_20_14_ptsf_fg", "fG de PTSF en ascenso específico (Exhibit 20-14)"),
+    ("specific_grade_20_15_ats_et", "ET de ATS en ascenso específico (Exhibit 20-15)"),
+    ("specific_grade_20_16_ptsf_et_er", "ET/ER de PTSF en ascenso específico (Exhibit 20-16)"),
+    ("specific_grade_20_17_ats_er", "ER de ATS en ascenso específico (Exhibit 20-17)"),
+    ("specific_grade_20_18_crawl_etc", "ETC para camiones a velocidad de arrastre (Exhibit 20-18)"),
+    ("specific_grade_20_19_ats_fnp", "Ajuste ATS por no rebase direccional (Exhibit 20-19)"),
+    ("specific_grade_20_20_ptsf_fnp", "Ajuste PTSF por no rebase direccional (Exhibit 20-20)"),
+    ("specific_grade_20_21_ptsf_coefficients", "Coeficientes PTSF direccional (Exhibit 20-21)"),
+    ("specific_downgrade_fg_reference", "Referencia fG de descenso específico"),
+    ("tabla_20_5_fls", "Ajuste geométrico FFS (Exhibit 20-5)"),
+    ("tabla_20_6_fa", "Ajuste por accesos (Exhibit 20-6)"),
+    ("tabla_20_9_equivalentes_velocidad", "Equivalencias ATS en terreno nivel (Exhibit 20-9)"),
+    ("tabla_20_10_equivalentes_ptsf", "Equivalencias PTSF en terreno nivel (Exhibit 20-10)"),
+    ("los_carreteras_dos_carriles", "Criterios LOS de dos carriles"),
+    ("capacidad_dos_carriles_reference", "Capacidad direccional de dos carriles"),
+)
+
 
 def verify_two_lane_tables(
     data_loader: DataLoader | None = None,
@@ -34,6 +53,36 @@ def verify_two_lane_tables(
     results: list[dict[str, Any]] = []
     all_verified = True
     for table_id, label in REQUIRED_TWO_LANE_TABLES:
+        try:
+            definition = loader.get_table_metadata(table_id)
+            records = loader.load_table(table_id)
+            results.append({
+                "Parámetro/tabla": label,
+                "Estado": "Disponible y verificada",
+                "Registros": len(records),
+                "Fuente": definition.chapter_section,
+                "Detalle": "",
+            })
+        except DataLoaderError as exc:
+            all_verified = False
+            results.append({
+                "Parámetro/tabla": label,
+                "Estado": "No disponible o no verificada",
+                "Registros": 0,
+                "Fuente": "",
+                "Detalle": str(exc),
+            })
+    return results, all_verified
+
+
+def verify_specific_grade_tables(
+    data_loader: DataLoader | None = None,
+) -> tuple[list[dict[str, Any]], bool]:
+    """Verify all primary HCM tables needed by specific-grade analysis."""
+    loader = data_loader or DataLoader()
+    results: list[dict[str, Any]] = []
+    all_verified = True
+    for table_id, label in REQUIRED_SPECIFIC_GRADE_TABLES:
         try:
             definition = loader.get_table_metadata(table_id)
             records = loader.load_table(table_id)

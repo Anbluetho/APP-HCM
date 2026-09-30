@@ -1,4 +1,4 @@
-"""Input components for the HCM highway analysis interface."""
+"""Compact input components for the HCM 2000 two-lane procedure."""
 
 import streamlit as st
 
@@ -10,29 +10,34 @@ from models.input_data import (
     ProjectInfo,
     TrafficInputs,
 )
+from models.specific_grade import SpecificGradeInputs
+
+
+def render_analysis_type() -> str:
+    """Select between the existing two-way procedure and specific grades."""
+    st.subheader("Tipo de análisis")
+    return st.radio(
+        "Seleccione el procedimiento HCM 2000",
+        ["Segmento bidireccional extendido", "Pendiente específica"],
+        key="analysis_type",
+    )
 
 
 def render_project_info() -> ProjectInfo:
-    """Render project traceability fields and return their structured values."""
-    with st.container(border=True):
-        st.header("1. Información del proyecto", divider="gray")
-        st.caption("Estos datos identifican el análisis; no modifican el resultado matemático.")
-        left, right = st.columns(2)
-        with left:
-            project_name = st.text_input("Nombre del proyecto *", key="project_name")
-            location = st.text_input("Ubicación del tramo *", key="project_location")
-        with right:
-            analyst = st.text_input(
-                "Responsable del análisis",
-                key="analyst",
-                help="Se incluye en los metadatos del informe; no interviene en el cálculo.",
-            )
-            data_origin = st.selectbox(
-                "Origen principal de los datos",
-                ["Aforo de campo", "Base secundaria", "Información suministrada"],
-                key="data_origin",
-                help="Se conserva como trazabilidad del informe y no como variable del motor.",
-            )
+    """Collect required project identification and optional report metadata."""
+    st.subheader("Información del proyecto")
+    left, right = st.columns(2)
+    with left:
+        project_name = st.text_input("Proyecto *", key="project_name")
+    with right:
+        location = st.text_input("Ubicación del tramo *", key="project_location")
+    with st.expander("Metadatos opcionales"):
+        analyst = st.text_input("Responsable", key="analyst")
+        data_origin = st.selectbox(
+            "Origen de los datos",
+            ["Aforo de campo", "Base secundaria", "Información suministrada"],
+            key="data_origin",
+        )
     return {
         "project_name": project_name,
         "analyst": analyst,
@@ -42,211 +47,321 @@ def render_project_info() -> ProjectInfo:
 
 
 def render_facility_selection() -> FacilityInfo:
-    """Render the supported facility selection."""
-    with st.container(border=True):
-        st.header("2. Selección del tipo de vía", divider="gray")
-        facility_type = st.selectbox(
-            "Tipo de instalación",
-            ["Carretera de dos carriles", "Carretera multicarril"],
-            key="facility_type",
-            help="El formulario y motor se adaptan al procedimiento elegido.",
-        )
-    return {"facility_type": facility_type}
+    """Identify the single facility type currently supported by this page."""
+    st.markdown("**Tipo de vía:** Carretera de dos carriles")
+    return {"facility_type": "Carretera de dos carriles"}
 
 
 def render_geometric_inputs() -> GeometricInputs:
-    """Render geometric inputs required by the selected facility procedure."""
-    multilane = st.session_state.get("facility_type") == "Carretera multicarril"
-    with st.container(border=True):
-        st.header("3. Datos geométricos", divider="gray")
-        st.caption("Ingrese las características medidas del segmento analizado.")
-        left, right = st.columns(2)
-        with left:
-            segment_length = None
-            if not multilane:
-                segment_length = st.number_input(
-                    "Longitud del tramo (km) *", min_value=0.0, value=None,
-                    step=0.1, placeholder="Ingrese un valor mayor que cero",
-                    key="segment_length_km",
-                    help="Se utiliza en el procedimiento de dos carriles para las medidas de desempeño del segmento.",
-                )
-            lane_width = st.number_input(
-                "Ancho de carril (m) *",
-                min_value=3.0 if multilane else 2.7,
-                value=None,
-                step=0.1,
-                placeholder="Ingrese el ancho medido",
-                key="lane_width_m",
-            )
-        with right:
-            shoulder_width = None
-            lanes_per_direction = None
-            lateral_clearance = None
-            median_type = None
-            if multilane:
-                lanes_per_direction = st.selectbox(
-                    "Carriles por sentido *", ["Seleccione...", 2, 3],
-                    format_func=lambda value: "Seleccione..." if value == "Seleccione..." else str(value),
-                    key="lanes_per_direction",
-                )
-                lateral_clearance = st.number_input(
-                    "Despeje lateral total (m) *", min_value=0.0, max_value=3.6,
-                    value=None, step=0.1, key="lateral_clearance_m",
-                    help="La tabla transcrita documenta valores de 0 a 3,6 m; se interpola dentro de ese rango.",
-                )
-                median_type = st.selectbox(
-                    "Tipo de mediana *", ["Seleccione...", "divided", "undivided"],
-                    format_func=lambda value: {
-                        "Seleccione...": "Seleccione una opción",
-                        "divided": "Vía dividida",
-                        "undivided": "Vía no dividida",
-                    }[value],
-                    key="median_type",
-                )
-            else:
-                shoulder_width = st.number_input(
-                    "Ancho de berma (m) *", min_value=0.0, value=None,
-                    step=0.1, placeholder="Ingrese el ancho medido", key="shoulder_width_m",
-                )
+    """Collect segment geometry in two columns."""
+    st.subheader("Datos geométricos")
+    left, right = st.columns(2)
+    with left:
+        segment_length = st.number_input(
+            "Longitud del tramo (km) *",
+            min_value=0.0,
+            value=None,
+            step=0.1,
+            placeholder="Mayor o igual que 3 km",
+            key="segment_length_km",
+        )
+        lane_width = st.number_input(
+            "Ancho de carril (m) *",
+            min_value=0.0,
+            value=None,
+            step=0.1,
+            placeholder="Ancho medido",
+            key="lane_width_m",
+        )
+    with right:
+        shoulder_width = st.number_input(
+            "Ancho de berma/banquina (m) *",
+            min_value=0.0,
+            value=None,
+            step=0.1,
+            placeholder="Ancho medido",
+            key="shoulder_width_m",
+        )
+        st.number_input(
+            "Zona donde no se permite adelantar (%) *",
+            min_value=0.0,
+            max_value=100.0,
+            value=None,
+            step=1.0,
+            key="no_passing_zones_percent",
+        )
     return {
         "segment_length_km": segment_length,
         "lane_width_m": lane_width,
         "shoulder_width_m": shoulder_width,
-        "lanes_per_direction": None if lanes_per_direction in (None, "Seleccione...") else int(lanes_per_direction),
-        "lateral_clearance_m": lateral_clearance,
-        "median_type": None if median_type in (None, "Seleccione...") else median_type,
+        "lanes_per_direction": None,
+        "lateral_clearance_m": None,
+        "median_type": None,
     }
 
 
 def render_traffic_inputs() -> TrafficInputs:
-    """Render observed demand, peak-hour, direction, and vehicle mix inputs."""
-    with st.container(border=True):
-        st.header("4. Datos de tránsito", divider="gray")
-        st.caption("Use datos del mismo período de análisis y documente su procedencia en la sección del proyecto.")
+    """Collect traffic inputs in two columns with units in each label."""
+    st.subheader("Datos de tránsito")
+    left, right = st.columns(2)
+    with left:
         hourly_volume = st.number_input(
-            "Volumen horario total de ambos sentidos (veh/h) *",
-            min_value=0.0, value=None, step=1.0,
-            placeholder="Ingrese el volumen horario observado",
+            "Volumen horario bidireccional (veh/h) *",
+            min_value=0.0,
+            value=None,
+            step=1.0,
             key="hourly_volume_two_way",
         )
-        left, right = st.columns(2)
-        with left:
-            phf = st.number_input(
-                "Factor de hora pico, PHF *", min_value=0.0, max_value=1.0,
-                value=None, step=0.01,
-                placeholder="Ingrese el valor observado o calculado",
-                key="peak_hour_factor",
-                help="Factor adimensional de hora pico del período analizado.",
-            )
-            major_split_choice = st.selectbox(
-                "Distribución direccional (sentido de mayor flujo / opuesto) *",
-                ["Seleccione...", 50, 60, 70, 80, 90],
-                format_func=lambda value: "Seleccione la distribución" if value == "Seleccione..." else f"{value}/{100-int(value)}",
-                key="major_direction_split",
-            )
-        with right:
-            trucks_percent = st.number_input(
-                "Camiones y buses (%) *", min_value=0.0, max_value=100.0,
-                value=None, step=0.1, key="trucks_percent",
-            )
-            rvs_percent = st.number_input(
-                "Vehículos recreacionales, RV (%) *", min_value=0.0, max_value=100.0,
-                value=None, step=0.1, key="recreational_vehicles_percent",
-            )
-            st.caption("Camiones/buses + RV no debe superar el 100% del flujo.")
+        phf = st.number_input(
+            "Factor de hora pico, PHF *",
+            min_value=0.0,
+            max_value=1.0,
+            value=None,
+            step=0.01,
+            key="peak_hour_factor",
+        )
+        major_split_choice = st.selectbox(
+            "Distribución direccional (mayor/opuesto) *",
+            ["Seleccione...", 50, 60, 70, 80, 90],
+            format_func=lambda value: (
+                "Seleccione la distribución"
+                if value == "Seleccione..."
+                else f"{value}/{100-int(value)}"
+            ),
+            key="major_direction_split",
+        )
+    with right:
+        trucks_percent = st.number_input(
+            "Camiones y buses (%) *",
+            min_value=0.0,
+            max_value=100.0,
+            value=None,
+            step=0.1,
+            key="trucks_percent",
+        )
+        rvs_percent = st.number_input(
+            "Vehículos recreacionales, RV (%) *",
+            min_value=0.0,
+            max_value=100.0,
+            value=None,
+            step=0.1,
+            key="recreational_vehicles_percent",
+        )
     return {
         "hourly_volume_two_way_veh_per_h": hourly_volume,
         "peak_hour_factor": phf,
-        "major_direction_percent": None if major_split_choice == "Seleccione..." else int(major_split_choice),
+        "major_direction_percent": (
+            None if major_split_choice == "Seleccione..." else int(major_split_choice)
+        ),
         "trucks_percent": trucks_percent,
         "recreational_vehicles_percent": rvs_percent,
     }
 
 
 def render_operational_inputs() -> OperationalInputs:
-    """Render terrain and road-class inputs used by the selected procedure."""
-    multilane = st.session_state.get("facility_type") == "Carretera multicarril"
-    with st.container(border=True):
-        st.header("5. Condiciones de operación", divider="gray")
-        left, right = st.columns(2)
-        with left:
-            terrain_choice = st.selectbox(
-                "Tipo de terreno *",
-                ["Seleccione...", "plano", "ondulado", "montanoso", "escarpado"],
-                format_func=lambda value: {
-                    "Seleccione...": "Seleccione el terreno",
-                    "plano": "Plano", "ondulado": "Ondulado",
-                    "montanoso": "Montañoso", "escarpado": "Escarpado",
-                }[value],
-                key="terrain",
-            )
-        with right:
-            highway_class_choice = None
-            if not multilane:
-                highway_class_choice = st.selectbox(
-                    "Clase de carretera HCM *", ["Seleccione...", "I", "II", "III"],
-                    format_func=lambda value: "Seleccione la clase" if value == "Seleccione..." else f"Clase {value}",
-                    key="highway_class",
-                )
-            else:
-                st.caption("Para el procedimiento multicarril, el LOS se determina mediante densidad.")
+    """Collect terrain and HCM road class, required by the existing analyzer."""
+    st.subheader("Condiciones de operación")
+    left, right = st.columns(2)
+    with left:
+        terrain_choice = st.selectbox(
+            "Tipo de terreno *",
+            ["Seleccione...", "plano", "ondulado", "montanoso", "escarpado"],
+            format_func=lambda value: {
+                "Seleccione...": "Seleccione el terreno",
+                "plano": "Plano",
+                "ondulado": "Ondulado",
+                "montanoso": "Montañoso",
+                "escarpado": "Escarpado",
+            }[value],
+            key="terrain",
+        )
+    with right:
+        highway_class_choice = st.selectbox(
+            "Clase de carretera HCM *",
+            ["Seleccione...", "I", "II", "III"],
+            format_func=lambda value: (
+                "Seleccione la clase"
+                if value == "Seleccione..."
+                else f"Clase {value}"
+            ),
+            key="highway_class",
+        )
     return {
         "terrain": None if terrain_choice == "Seleccione..." else terrain_choice,
-        "highway_class": None if highway_class_choice in (None, "Seleccione...") else highway_class_choice,
+        "highway_class": (
+            None if highway_class_choice == "Seleccione..." else highway_class_choice
+        ),
     }
 
 
 def render_procedure_inputs() -> ProcedureInputs:
-    """Render the additional inputs specific to the chosen HCM procedure."""
-    multilane = st.session_state.get("facility_type") == "Carretera multicarril"
-    with st.container(border=True):
-        st.header("6. Datos adicionales del procedimiento", divider="gray")
-        st.caption(
-            "Procedimiento multicarril documentado en C05-C07-Capacidad_2.pdf, sección 3."
-            if multilane else
-            "Procedimiento operacional de segmento bidireccional, HCM 2000, capítulo 20."
+    """Collect additional variables required by the implemented HCM procedure."""
+    st.subheader("Datos adicionales del procedimiento")
+    left, right = st.columns(2)
+    with left:
+        access_points = st.number_input(
+            "Densidad de puntos de acceso (accesos/km) *",
+            min_value=0.0,
+            value=None,
+            step=1.0,
+            key="access_points_per_km",
+            help="Use una categoría documentada: 0, 6, 12, 18 o al menos 24 accesos/km.",
         )
-        left, right = st.columns(2)
-        with left:
-            access_points = st.number_input(
-                "Densidad de puntos de acceso (accesos/km) *",
-                min_value=0.0, value=None, step=1.0,
-                help="Exhibit 20-6 contiene las categorías disponibles para el procedimiento de dos carriles.",
-                key="access_points_per_km",
-            )
-            bffs = st.number_input(
-                "Velocidad base a flujo libre, BFFS (km/h) *",
-                min_value=70.0, max_value=110.0, value=None, step=1.0,
-                placeholder="Ingrese la velocidad base sustentada",
-                key="base_free_flow_speed_km_per_h",
-                help="Ingrese la velocidad base sustentada por el estudio del proyecto.",
-            )
-        with right:
-            no_passing = None
-            driver_factor = None
-            if multilane:
-                driver_factor = st.selectbox(
-                    "Factor de población de conductores, fP *",
-                    ["Seleccione...", 1.0, 0.95, 0.90, 0.85],
-                    format_func=lambda value: "Seleccione..." if value == "Seleccione..." else f"{value:.2f}",
-                    key="driver_population_factor",
-                    help="Valores documentados en el PDF de referencia; justifique la selección según el uso habitual/recreacional.",
-                )
-            else:
-                no_passing = st.number_input(
-                    "Zonas de no rebase (%) *", min_value=0.0, max_value=100.0,
-                    value=None, step=1.0, key="no_passing_zones_percent",
-                )
-            field_notes = st.text_area(
-                "Observaciones de campo (opcional)",
-                placeholder="Anote condiciones cualitativas relevantes del levantamiento.",
-                key="procedure_field_notes",
-            )
+    with right:
+        bffs = st.number_input(
+            "Velocidad base a flujo libre, BFFS (km/h) *",
+            min_value=0.0,
+            value=None,
+            step=1.0,
+            key="base_free_flow_speed_km_per_h",
+            help="Ingrese la velocidad base sustentada por los datos del proyecto.",
+        )
+    no_passing = st.session_state.get("no_passing_zones_percent")
     return {
-        "field_notes": field_notes,
+        "field_notes": "",
         "access_points_per_km": access_points,
         "no_passing_zones_percent": no_passing,
         "base_free_flow_speed_km_per_h": bffs,
-        "driver_population_factor": None if driver_factor in (None, "Seleccione...") else float(driver_factor),
+        "driver_population_factor": None,
     }
 
+
+def render_specific_grade_inputs() -> SpecificGradeInputs:
+    """Collect only the inputs used by the specific-grade directional engine."""
+    st.subheader("Datos de la pendiente y sentido")
+    direction_label = st.radio(
+        "Pendiente en el sentido analizado *",
+        ["Ascenso", "Descenso"],
+        key="specific_grade_direction",
+        horizontal=True,
+    )
+    direction = "upgrade" if direction_label == "Ascenso" else "downgrade"
+    left, right = st.columns(2)
+    with left:
+        grade_percent = st.number_input(
+            "Pendiente (%) *", min_value=0.0, value=None, step=0.1,
+            key="specific_grade_percent",
+        )
+        grade_length = st.number_input(
+            "Longitud de la pendiente (km) *", min_value=0.0, value=None,
+            step=0.1, key="specific_grade_length_km",
+        )
+    with right:
+        highway_class = st.selectbox(
+            "Clase HCM *", ["Seleccione...", "I", "II"],
+            format_func=lambda value: "Seleccione la clase" if value == "Seleccione..." else f"Clase {value}",
+            key="specific_grade_highway_class",
+        )
+        no_passing = st.number_input(
+            "Zonas de no rebase en el sentido analizado (%) *",
+            min_value=0.0, max_value=100.0, value=None, step=1.0,
+            key="specific_grade_no_passing_percent",
+        )
+
+    st.subheader("Datos de tránsito por sentido")
+    left, right = st.columns(2)
+    with left:
+        analysis_volume = st.number_input(
+            "Volumen del sentido analizado (veh/h) *", min_value=0.0,
+            value=None, step=1.0, key="specific_grade_analysis_volume",
+        )
+        analysis_trucks = st.number_input(
+            "Camiones y buses, sentido analizado (%) *", min_value=0.0,
+            max_value=100.0, value=None, step=0.1,
+            key="specific_grade_analysis_trucks",
+        )
+        analysis_rvs = st.number_input(
+            "RV, sentido analizado (%) *", min_value=0.0, max_value=100.0,
+            value=None, step=0.1, key="specific_grade_analysis_rvs",
+        )
+    with right:
+        opposing_volume = st.number_input(
+            "Volumen del sentido opuesto (veh/h) *", min_value=0.0,
+            value=None, step=1.0, key="specific_grade_opposing_volume",
+        )
+        opposing_trucks = st.number_input(
+            "Camiones y buses, sentido opuesto (%) *", min_value=0.0,
+            max_value=100.0, value=None, step=0.1,
+            key="specific_grade_opposing_trucks",
+        )
+        opposing_rvs = st.number_input(
+            "RV, sentido opuesto (%) *", min_value=0.0, max_value=100.0,
+            value=None, step=0.1, key="specific_grade_opposing_rvs",
+        )
+    phf = st.number_input(
+        "Factor de hora pico, PHF *", min_value=0.0, max_value=1.0,
+        value=None, step=0.01, key="specific_grade_phf",
+    )
+
+    st.subheader("Geometría para determinar FFS")
+    left, right = st.columns(2)
+    with left:
+        lane_width = st.number_input(
+            "Ancho de carril (m) *", min_value=0.0, value=None, step=0.1,
+            key="specific_grade_lane_width",
+        )
+        access_density = st.number_input(
+            "Puntos de acceso (accesos/km) *", min_value=0.0, value=None,
+            step=1.0, key="specific_grade_access_points",
+            help="Exhibit 20-6 usa las categorías 0, 6, 12, 18 o ≥24 por km.",
+        )
+    with right:
+        shoulder_width = st.number_input(
+            "Ancho de berma (m) *", min_value=0.0, value=None, step=0.1,
+            key="specific_grade_shoulder_width",
+        )
+        bffs_analysis = st.number_input(
+            "BFFS del sentido analizado (km/h) *", min_value=0.0,
+            value=None, step=1.0, key="specific_grade_bffs_analysis",
+            help="Dato de campo/proyecto; no se asigna un valor HCM por defecto.",
+        )
+
+    downhill_crawl_choice = st.selectbox(
+        "¿Hay camiones a velocidad de arrastre en el sentido descendente? *",
+        ["Seleccione...", "No", "Sí"], key="specific_grade_crawl_condition",
+        help="La opción Sí activa la ecuación 20-14 y requiere datos de Exhibit 20-18.",
+    )
+    crawl_condition = None if downhill_crawl_choice == "Seleccione..." else downhill_crawl_choice == "Sí"
+    crawl_share = None
+    crawl_speed = None
+    bffs_opposing = None
+    if crawl_condition:
+        crawl_share = st.number_input(
+            "Camiones a velocidad de arrastre (% de camiones del sentido descendente) *",
+            min_value=0.0, max_value=100.0, value=None, step=0.1,
+            key="specific_grade_crawl_truck_share",
+        )
+        crawl_speed = st.number_input(
+            "Velocidad de arrastre de camiones (km/h) *", min_value=0.0,
+            value=None, step=1.0, key="specific_grade_crawl_speed",
+        )
+        if direction == "upgrade":
+            bffs_opposing = st.number_input(
+                "BFFS del sentido descendente/opuesto (km/h) *",
+                min_value=0.0, value=None, step=1.0,
+                key="specific_grade_bffs_opposing",
+                help="Solo se solicita porque la condición de arrastre aplica al descenso opuesto.",
+            )
+
+    return SpecificGradeInputs(
+        analysis_grade_direction=direction,
+        grade_percent=grade_percent,
+        grade_length_km=grade_length,
+        analysis_volume_veh_per_h=analysis_volume,
+        opposing_volume_veh_per_h=opposing_volume,
+        peak_hour_factor=phf,
+        analysis_trucks_percent=analysis_trucks,
+        analysis_rvs_percent=analysis_rvs,
+        opposing_trucks_percent=opposing_trucks,
+        opposing_rvs_percent=opposing_rvs,
+        highway_class="" if highway_class == "Seleccione..." else highway_class,
+        lane_width_m=lane_width,
+        shoulder_width_m=shoulder_width,
+        access_points_per_km=access_density,
+        no_passing_zones_percent=no_passing,
+        base_free_flow_speed_analysis_km_per_h=bffs_analysis,
+        downhill_crawl_condition=crawl_condition,
+        downhill_trucks_at_crawl_percent=crawl_share,
+        downhill_truck_crawl_speed_km_per_h=crawl_speed,
+        base_free_flow_speed_opposing_km_per_h=bffs_opposing,
+    )

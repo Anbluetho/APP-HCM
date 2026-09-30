@@ -9,7 +9,7 @@ validados del *Highway Capacity Manual 2000*.
 - **Fase 1 — interfaz inicial:** recoge datos generales para una carretera de
   dos carriles, muestra validaciones básicas y entrega campos en una estructura
   agrupada. No calcula capacidad, relación v/c ni nivel de servicio.
-- **Fase 2 — base de datos y tablas:** está implementado el catálogo y cargador CSV/JSON. Se importaron 11 CSV y se cotejaron sus tablas contra el capítulo 20 del manual HCM 2000 suministrado. No se han agregado parámetros de Ecuador ni ecuaciones ejecutables.
+- **Fase 2 — base de datos y tablas:** está implementado el catálogo y cargador CSV/JSON. Se importaron 11 CSV y se cotejaron sus tablas contra el capítulo 20 del manual HCM 2000 suministrado.
 - **Fase 3 — motor matemático:** implementado, independiente de Streamlit,
   únicamente para el análisis operacional de segmentos bidireccionales
   extendidos de carreteras de dos carriles del capítulo 20.
